@@ -1,0 +1,59 @@
+  <!-- Feature Course Start -->
+   {% load static %}
+  <section class=" my-10">
+    <div class="carousel-wrapper relative lg:container w-[90%] mx-auto">
+
+        <h1 class="text-3xl font-bold mb-5"> Feature Courses</h1>
+        <p class="mb-2">Explore cutting-edge strategies to enhance your skills and boost your career in this
+            comprehensive
+            course.</p>
+        <!-- Left Arrow -->
+        <button 
+            class="prev absolute hidden left-0 top-2/3 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full">
+            &#10094;
+        </button>
+
+        <!-- Carousel Items -->
+        <div  class="carousel-id carousel flex overflow-x-auto space-x-4 scroll-smooth">
+            <div class="carousel-item sm:w-1/3 lg:w-1/5 bg-white p-4 rounded-lg shadow-lg">
+                <div>
+                    <img src="{% static './Screenshot 2024-09-12 175847.png' %}" alt="Item 1" class="mx-auto">
+                    <h1 class="text-center mt-2 text-lg font-semibold">Item 4 Title</h1>
+
+                    <!-- Author Name -->
+                    <p class="text-center mt-1 text-sm text-gray-700">by John Doe</p>
+
+                    <!-- Rating -->
+                    <div class="flex justify-center items-center mt-2">
+                        <!-- Star Icons for rating (can be done using icons or emojis) -->
+                        <span class="text-yellow-500">&#9733;</span> <!-- Filled Star -->
+                        <span class="text-yellow-500">&#9733;</span> <!-- Filled Star -->
+                        <span class="text-yellow-500">&#9733;</span> <!-- Filled Star -->
+                        <span class="text-yellow-500">&#9733;</span> <!-- Filled Star -->
+                        <span class="text-gray-300">&#9733;</span> <!-- Empty Star -->
+                        <span class="ml-2 text-sm text-gray-600">(4.0)</span>
+                    </div>
+
+                    <!-- Price -->
+                    <p class="text-center mt-2 text-gray-500">$59.99</p>
+
+                    <!-- Add to Cart Button -->
+                    <button class="mt-4 w-full bg-btn-bg text-white py-2 rounded-md ">
+                        Add to Cart
+                    </button>
+
+                </div>
+            </div>
+
+
+
+            <!-- Add more items if needed -->
+        </div>
+
+        <!-- Right Arrow -->
+        <button 
+            class="next absolute right-0 top-2/3 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full">
+            &#10095;
+        </button>
+    </div>
+</section>

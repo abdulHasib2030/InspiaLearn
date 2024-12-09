@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" dat>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   {% block title %}
+   {% endblock title %}
+    <!-- <link rel="shortcut icon" href="{% static 'assets/logo/favicon.ico' %}" type="image/x-icon"> -->
+    <link rel="shortcut icon" href="{% static 'assets/logo/favi.png' %}" type="image/x-icon">
+    <!-- <link rel="shortcut icon" href="./th" type="image/png" sizes="96x96"> -->
+    <!-- DaisyUI and TailwindCSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- font awsome cdn  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                        'btn-bg': '#684FB7',
+                        'btn-bg2': '#E6326F',
+                    }
+                }
+            }
+        }
+    </script>
+
+
+
+    {% block style %}
+
+    {% endblock style %}
+
+</head>
+
+<body class="font-awesome">
+    <!-- header section start -->
+ {% block header %}
+
+
+ {% endblock header %}
+
+    <!-- Main section start -->
+  
+        {% block main %}
+
+        {% endblock main %}
+        
+        
+
+    {% block footer %}
+ 
+    {% endblock footer %}
+    
+
+    <!-- Script File -->
+     {% block js %}
+   
+     {% endblock js %}
+ 
+     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    
+
+</body>
+</html>

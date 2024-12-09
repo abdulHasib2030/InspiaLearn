@@ -1,0 +1,147 @@
+ <!-- navbar start -->
+  {% load static %}
+ <nav>
+    <div class="navbar bg-base-100 " id="nav-search">
+        <div class="navbar-start">
+            <!-- <i class="fa-solid  fa-arrow-right bg-btn-bg p-2 -rotate-45 text-[16px] rounded-[100%] mr-1"></i> <a
+                class="font-bold text-3xl">Rinterio</a> -->
+            <a href="{%url 'home' %}"><img src="{% static './assets/logo/thj.png' %}" class="w-56" alt=""></a>
+            <!-- <h5 class="text-5xl font-bold ml-1">Learning</h5> -->
+        </div>
+
+        <div class="navber-center hidden lg:flex">
+            <div class="">
+                <form class="relative">
+                    <!-- Search Input -->
+                    <input type="text" placeholder="Search for courses, topics..."
+                        class="w-[450px] p-3 pl-12 pr-16 rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 ease-in-out">
+
+                    <!-- Search Icon -->
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+
+                    <!-- Search Button -->
+
+                </form>
+            </div>
+        </div>
+
+
+        <div class="navbar-end">
+            <button class=" bg-white border-2 p-2 rounded-full mr-2  md:block lg:hidden " id="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+            <button class="bg-white relative border-2 p-2 rounded-full mx-2  md:block">
+                <a href="{% url 'cart' %}">
+                    {% if cartlen != 0 %}
+                <span class="absolute bg-[#684FB7] py-0 px-2 text-white rounded-full -top-2 -right-2">{{cartlen}}</span>
+                {% endif %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </a>
+            </button>
+
+            {% if request.user.is_authenticated %}
+            <div x-data="{ dropdownOpen: false }" class="relative">
+                <button @click="dropdownOpen = ! dropdownOpen"
+                    class="relative block w-10 h-10 overflow-hidden border-2 rounded-full shadow focus:outline-none">
+                    <img class="object-cover w-full h-full"
+                        src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=296&amp;q=80"
+                        alt="Your avatar">
+                </button>
+
+                <div x-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 z-10 w-full h-full"
+                    style="display: none;"></div>
+
+                <div x-show="dropdownOpen"
+                    class="absolute right-0 z-10 w-48 mt-2 font-semibold overflow-hidden bg-white rounded-md shadow-xl"
+                    style="display: none;">
+                    <a href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Profile</a>
+                    {% if isInstructorActive %}
+                        <a href="{% url 'instructor' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Instructor account</a>
+                    {% endif %}
+                        <a href="{% url 'learning-page' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">My learning</a>
+                    <a href="{% url 'logout'%}?next={{ request.path }} "
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Logout</a>
+                </div>
+            </div>
+
+            {% else%}
+
+            <div class="hidden md:block px-5 py-2 bg-btn-bg2 ml-3 cursor-pointer">
+                <a href="{% url 'login' %}?next={{ request.path }}" class=" font-semibold text-xl text-white">Login
+                </a>
+            </div>
+            <div class="hidden md:block bg-btn-bg px-5 py-2  ml-3 cursor-pointer">
+                <a href="{% url 'signup' %}?next={{ request.path }}" class=" font-semibold text-xl text-white">Signup </a>
+            </div>
+
+            <div class="dropdown relative">
+                <!-- Toggle Button -->
+                <div tabindex="0" role="button" id="menu-button" data-authenticated="{{ is_authenticated|yesno:'true,false' }}"
+                    class="bg-white border-2 p-2 ml-2 rounded-full md:hidden cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="inline-block h-6 w-6 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <ul id="menu-content" tabindex="0"
+                    class=" dropdown-content bg-base-100 rounded z-[1] mt-3 right-1 items-center  p-4 shadow  hidden">
+                    <li>
+                        <div class=" py-2 px-5 bg-btn-bg2 mb-5 cursor-pointer">
+                            <a href="{% url 'login' %}?next={{ request.path }}" class=" font-semibold text-xl text-white">Login
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="py-2 px-5 bg-btn-bg p cursor-pointer">
+                            <a  href="{% url 'signup' %}?next={{ request.path }}" class=" font-semibold text-xl text-white">Signup </a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            {% endif %}
+
+
+
+
+          
+        </div>
+
+    </div>
+
+    <div class="navbar w-full bg-base-100 hidden" id="input-search">
+
+        <form action="" class="relative">
+            <input type="text" placeholder="Search for courses, topics..."
+                class="w-full p-3 pl-12 pr-16 rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 ease-in-out">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <div class="absolute inset-y-0 right-1 pl-4 flex items-center ">
+                <i class="fa-solid fa-xmark ml-4 text-2xl  p-1 right-0 px-2 rounded cursor-pointer"
+                    id="close-search"></i>
+            </div>
+
+        </form>
+
+
+    </div>
+
+</nav>
+<!-- navbar end -->

@@ -1,0 +1,47 @@
+{% load static %}
+<!-- Category section start -->
+<section class=" mt-10  ">
+    <div class="carousel-wrapper relative   lg:container w-[90%] mx-auto  ">
+
+        <h1 class="text-3xl font-bold mb-5">Top categories</h1>
+        
+        <!-- Left Arrow -->
+        <button 
+            class="absolute hidden z-20  prev -left-5 top-1/2  transform -translate-y-1/2 bg-black  text-white px-4 py-2 rounded-full">
+            &#10094;
+        </button>
+
+        <!-- Carousel Items -->
+        <div  class="carousel carousel-id flex overflow-x-auto space-x-7 scroll-smooth mb-4">
+            {% for i in category %}
+            <div onclick="categoryBtnClik('{{i.category_name}}')" class="carousel-item   bg-white   rounded-lg mt-2   duration-300 ease-in-out transition-transform transform hover:-translate-y-2 cursor-pointer ">
+            
+                    <div class=" items-center text-start  w-full">
+                        <img src="{{i.category_image.url}}" alt="" class="w-44 rounded-xl mx-auto bg-base-200 p-5">
+                        <h2 class="text-xl font-semibold ml-2 mt-2">{{i.category_name}}</h2>
+                    </div>
+             
+            </div>
+           
+          {% endfor %}
+
+
+            <!-- Add more items if needed -->
+        </div>
+
+        <form action="" method="get" class="hidden">
+            {% csrf_token %}
+            <input type="text" class="hidden" id="category-input" name="category">
+            <button type="submit" id="category-btn"></button>
+          </form>
+    
+
+        <!-- Right Arrow -->
+        <button 
+            class="absolute next -right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full">
+            &#10095;
+        </button>
+    </div>
+</section>
+
+

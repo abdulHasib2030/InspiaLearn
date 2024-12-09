@@ -1,0 +1,12 @@
+{% load static %}
+<section class="my-10">
+    <div class="md:w-1/2 mx-auto w-[90%] lg:flex justify-center items-center" >
+            <img src="{% static './assets/teacher/teacher.png' %}" alt="">
+      
+        <div class="text-center lg:text-start mt-5 lg:mt-0">
+            <h1 class="text-4xl font-semibold pb-7">Become an instructor</h1>
+            <p class="">We enable instructors to teach what they love...</p>
+               <a href="{% url 'instructor-create' %}"> <button class="py-4 px-3 text-white font-bold text-xl bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] my-5">Start teaching today</button></a>
+        </div>
+    </div>
+ </section>
