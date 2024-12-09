@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+
+<header class="lg:container w-[95%] mx-auto  py-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% include "includes/nav.html" %}
+
+
+</header>
+{% endblock header %}
+
+{% block main%}
+<div class="">
+    <div>
+        <div class="bg-black text-center space-y-4 p-12 text-white">
+            <h1 class="text-4xl font-bold mb-4">My learning</h1>
+
+           <a href="{% url 'learning-page' %}"> <button id="all-courses"
+                class="text-xl font-bold border-2 border-white  py-2 px-6 hover:bg-gray-300 hover:text-black">All
+                courses</button></a>
+           <a href="{% url 'wishlist' %}"> <button id="wishlist"
+                class="text-xl font-bold border-2 border-white  py-2 px-6 hover:bg-gray-300 hover:text-black">Wishlist</button></a>
+
+        </div>
+
+
+        <div>
+            <div id="courses-show" class="lg:container w-[95%] mx-auto my-10">
+                {% for i in purchaseCourse%}
+                {% for j in i.course.all %}
+                <div
+                    class=" items-center justify-start  border border-transparent bg-[#684FB7]/10 transition duration-150 ease-in-out hover:scale-105 rounded-lg p-6 mb-8 md:flex gap-4">
+                    <img class="md:w-80 w-full rounded-lg" src="{{j.landing_page.coure_image.url}}" alt="">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl font-bold mt-3 md:mt-0">{{j.course.title}}</h1>
+                        <p>By {{j.course.instructor.user.first_name}}</p>
+                        <a href="{% url 'watching_page' slug=j.slug %}">
+                            <button
+                                class="bg-[#E6326F] font-bold text-xl mt-4 py-2 px-6 border border-[#684FB7] text-white">
+                                Continue Course</button></a>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% endfor %}
+            </div>
+
+            <!-- wishlist show item-->
+            <div id="wishlist-show" class="lg:container w-[95%] mx-auto my-10 hidden">
+                {% if wishlistItem  %}
+                <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-4 ">
+                    {% for i in wishlistItem %}
+                    <div class="card cursor-pointer shadow-md relative card-compact bg-base-100 w-72 mx-auto rounded-none transition duration-150 ease-in-out hover:scale-105">
+                        <a href="{% url 'course_details' uid=i.publish_course.course.uid %}" >
+                        <figure>
+                          <img
+                            src="{{i.publish_course.landing_page.coure_image.url}}"
+                            alt="image not found"  class="hover:bg-black"/>
+                        </figure>
+                        <div class="card-body">
+                          <h2 class="card-title">{{i.publish_course.course.title}}</h2>
+                          <p>{{i.publish_course.course.instructor.user.first_name}}</p>
+                        <div class="flex justify-between">
+                            <div class="flex gap-2">
+                                <p>{{i.publish_course.video_length}}</p>
+                            <p>{{i.publish_course.totalLecture}}</p>
+                            </div>
+                            
+                            <div>
+                                <p><a href="{% url 'wish-delete' i.id%}?next={{request.path}}  " class="text-primary">Remove wishlist</a></p>
+                            </div>
+                        </div>
+                        </div>
+                      
+                    </a>
+                      </div>
+
+                    {% endfor %}
+
+                </div>
+                {%else%}
+                <div class="h-52 flex justify-center items-center mb-20">
+                    <a href="{% url 'home' %}"><button class="bg-black py-2 px-6 text-white font-black text-2xl">Browse courses now</button></a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main%}
+
+{% block js%}
+<script>
+    const path = (window.location.pathname.split('/'));
+    const currentPath = (path[path.length - 2]);
+    if (currentPath === 'learning') {
+        const allCourses = document.getElementById('all-courses')
+        allCourses.classList.add('bg-gray-300', 'text-black')
+    }
+    else{
+      const courseShow = document.getElementById('courses-show')
+      const wishList = document.getElementById('wishlist')
+      const wishlistShow = document.getElementById('wishlist-show')
+      wishlistShow.classList.remove('hidden')
+      wishList.classList.add('bg-gray-300', 'text-black')
+
+      courseShow.classList.add('hidden')
+    }
+</script>
+{% endblock js%}
+
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+
+<header class="lg:container w-[95%] mx-auto  py-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% include "includes/nav.html" %}
+
+
+</header>
+{% endblock header %}
+
+{% block main %}
+<main class="mt-10 mb-10 md:container w-[92%] mx-auto ">
+
+    <div class="w-11/12 mx-auto lg:flex gap-7">
+        <!-- <div class="lg:w-1/2 ">
+            <video controlsList="nodownload"  controls poster="{{course.landing_page.coure_image.url}}"  tabindex="-1">
+                <source  id="videoField" src="{{course.landing_page.promotional_video.url}}" type="video/mp4">
+    
+            </video>
+    
+        </div> -->
+        <div class="lg:w-4/6 mx-auto md:w-4/5">
+            <h1 class="font-bold text-2xl my-4">{{title}}</h1>
+            <div class="relative border-2">
+
+      
+            <!-- Video Container -->
+            <video id="customVideo" controlsList="nodownload"  class="w-full" {% if first%} poster="{{publishcourse.landing_page.coure_image.url}}" {% endif %} tabindex="-1">
+                <source id="videoField" src="{{video.video_file.url}}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Custom Play Button -->
+            <button id="playButton" class="play-btn w-24 absolute inset-0 m-auto"><img src="{% static 'assets/logo/play.png' %}" alt=""></button>
+        </div>
+        </div>
+       
+    
+        <!-- course content -->
+    </div>
+    <div class="w-11/12 mx-auto">
+        <h1 class="text-2xl font-bold mt-7 mb-2">Course content</h1>
+    
+        <div class="border border-black bg-[#E5E7EB] p-4 my-3 ">
+    
+            {% for mdule in module %}
+    
+            <div class="collapse collapse-arrow border border-base-100  rounded-box mb-4">
+                <input type="checkbox" class="" />
+                <label for="collapse-trigger" class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+                    <div class="flex items-center  space-x-3">
+                        <h4 class="font-bold text-xl ">Module {{forloop.counter}}</h4>
+                        <div class="flex space-x-3 items-center">
+                            <p>{{mdule.title}}</p>
+    
+                        </div>
+    
+                    </div>
+    
+                </label>
+    
+                <div class="collapse-content ">
+                    {% for vid in mdule.videos.all %}
+    
+                    <div class="flex justify-between items-center mb-3">
+                        <a href="{% url 'watching_page_video' slug=publishcourse.slug slug_=vid.slug %}" class="flex  items-center gap-4 ">
+                            <i class="fa-solid fa-video "></i>
+                            <p class="link link-primary">{{vid.title}}</p>
+                        </a>
+                       
+                        <p>{{vid.duration}}</p>
+                    </div>
+    
+                    {% endfor %}
+                </div>
+    
+            </div>
+            {% endfor %}
+        </div>
+    
+        
+       
+    
+     
+       
+    
+    
+    </div>
+    
+    
+
+</main>
+{% endblock main %}
+
+    
+    {% block js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("customVideo");
+    const playButton = document.getElementById("playButton");
+
+    // Initially show the play button
+    playButton.addEventListener("click", () => {
+        video.play();
+        playButton.classList.add("hidden");
+        video.setAttribute("controls", "controls");
+        video.classList.add("show-controls");
+    });
+
+    // Show play button again when the video is paused
+    video.addEventListener("pause", () => {
+        playButton.classList.remove("hidden");
+        video.removeAttribute("controls");
+        video.classList.remove("show-controls");
+    });
+
+    // Keep controls visible during playback
+    video.addEventListener("play", () => {
+        video.setAttribute("controls", "controls");
+    });
+});
+
+        function toggleDescription() {
+            const shortDesc = document.getElementById('short-description');
+            const fullDesc = document.getElementById('full-description');
+            const button = document.getElementById('toggle-button');
+    
+            if (shortDesc.style.display === 'none') {
+                // Show less
+                shortDesc.style.display = 'inline';
+                fullDesc.style.display = 'none';
+                button.innerText = 'Show More';
+            } else {
+                // Show more
+                shortDesc.style.display = 'none';
+                fullDesc.style.display = 'inline';
+                button.innerText = 'Show Less';
+            }
+        }
+
+        // <!-- Cart Or Wish list -->
+        function cartWishListAdd(data){
+         const dataCartWishList = document.getElementById('dataCartWishList')
+         console.log(data);
+         dataCartWishList.value = data;
+        }
+
+        </script>
+
+     
+    {% endblock js %}
+
+
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}
