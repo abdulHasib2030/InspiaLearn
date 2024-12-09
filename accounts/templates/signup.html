@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>InspiaLearn Sign Up</title>
+{% endblock title %}
+{% block header %}
+<div class="md:container mx-auto w-[92%] py-4">
+    {% include "includes/nav.html" %}
+</div>
+ {% endblock header %}
+
+{% block main%}
+<div class="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-2xl my-16">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create an Account</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- Registration Form -->
+    <form class="space-y-4" method="post">
+        {% csrf_token %}
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-600">Full Name</label>
+            <input type="text" name="name" id="name"
+                class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6326F]">
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+            <input type="email" name="email" id="email"
+                class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6326F]">
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+            <div class="relative">
+                <input type="password" name="password" id="password"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6326F]">
+                <button type="button" onclick="togglePassword('password', 'eyeIcon1')" class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                    <i id="eyeIcon1" class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <label for="password2" class="block text-sm font-medium text-gray-600">Confirm Password</label>
+            <div class="relative">
+                <input type="password" name="password2" id="password2"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6326F]">
+                <button type="button" onclick="togglePassword('password2', 'eyeIcon2')" class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                    <i id="eyeIcon2" class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full px-4 py-2 text-white bg-[#684FB7] rounded-md  font-bold">Sign Up</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="relative my-6">
+        <span class="absolute inset-x-0 top-1/2 transform -translate-y-1/2 bg-white px-4 text-gray-500">or</span>
+        <div class="border-t border-gray-300"></div>
+    </div>
+
+    <!-- Social Login Buttons -->
+    <div class="space-y-4">
+        <a href="{%url 'google_login' %}?next={{ request.path }}">
+            <button
+                class="w-full flex items-center justify-center px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                <img src="https://img.icons8.com/color/20/000000/google-logo.png" alt="Google" class="mr-2">
+                Sign up with Google
+            </button></a>
+        <button
+            class="w-full flex items-center justify-center px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            <img src="https://img.icons8.com/fluency/20/000000/facebook-new.png" alt="Facebook" class="mr-2">
+            Sign up with Facebook
+        </button>
+    </div>
+
+    <!-- Already have an account -->
+    <p class="mt-6 text-sm text-center text-gray-600">
+        Already have an account? <a href="{%url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+    </p>
+</div>
+{% endblock main%}
+
+{% block js%}
+<script src="{% static 'js/visibleHidePassword.js' %}"></script> 
+{% endblock js%}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

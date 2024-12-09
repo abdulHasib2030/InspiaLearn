@@ -1,0 +1,55 @@
+{% extends 'instructor.html' %}
+{% block title %}
+<title>Online Courses - Learn Anything</title>
+{% endblock title %}
+{% load static %}
+{% block instructor %}
+<div>
+   <div class="shadow-xl border border-black flex justify-between w-4/5 mx-auto items-center p-5 my-7">
+
+      <h4 class="font-semibold text-xl ">Jump Into Course Creation</h4>
+      <a href="{% url 'course-create' %}">
+         <button class="py-3 px-7 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold">Create Your Course</button>
+      </a>
+
+   </div>
+   <!-- {% for i in allCourse %}
+      <div class="shadow-xl border border-gray-400 flex justify-between w-4/5 mx-auto items-center p-5 my-7 ">
+
+        <img src="{% static 'assets/logo/thj_school.png' %}" alt="">
+         <div class="space-y-3">
+            <h1 class="text-xl font-bold">{{i.title}}</h1>
+            <h4 class="font-semibold text-xl">
+              Category: {{i.category.category_name}}
+            </h4>
+
+         </div>
+
+      </div>
+      {% endfor %} -->
+
+   {% for i in allCourse %}
+   <div
+      class="shadow-xl border  border-gray-400 md:flex justify-between w-4/5 mx-auto items-center p-5 my-7 relative group">
+
+      <!-- Main content (always visible) -->
+      <img src="{% static 'assets/logo/thj_school.png' %}" alt="">
+      <div class="space-y-3">
+         <h1 class="text-xl font-bold">{{ i.title }}</h1>
+         <h4 class="font-semibold text-xl">
+            Category: {{ i.category.category_name }}
+         </h4>
+      </div>
+
+      <!-- Hidden content (only visible on hover) -->
+      <div
+         class="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center text-center text-lg font-medium p-5 hidden group-hover:flex">
+         <a href="{% url 'intended_lerner' i.uid %}" class="text-[#684FB7] font-bold text-xl">Edit / Manage Course</a>
+      </div>
+
+   </div>
+   {% endfor %}
+
+
+</div>
+{% endblock instructor %}

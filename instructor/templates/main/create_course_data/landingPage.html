@@ -1,0 +1,117 @@
+{% extends 'main/descrive_course.html' %}
+{% load static %}
+{% block course_data %}
+<div class="w-[90%] mx-auto shadow-xl bg-white p-3 ">
+
+    <form action="" method="post"  class="space-y-3" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button class="py-2 px-7 mb-3 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl" type="submit">Save</button>
+        <div class="border border-black p-4">
+            <div class=" space-y-4" id="add-learn">
+                <h2 class="text-2xl font-bold">Course landing page</h2>
+                <div class="divider"></div>
+                <div class="relative">
+                    <label for="" class="font-bold ">Course title</label>
+                    <input name="title" type="text" maxlength="160"
+                        value="{{ course.title|default_if_none:'' }}"
+                        class="title-data p-3 border w-full border-black"
+                        placeholder="e.g. Learn Web Development from Scratch">
+                    <span class="absolute right-3 data-cnt top-8">60</span>
+                    <p>Your title should be a mix of attention-grabbing, informative, and optimized for search</p>
+                </div>
+                <div class="relative">
+                    <label for="" class="font-bold ">Course subtitle</label>
+                    <input name="subtitle" type="text" maxlength="160"
+                        value="{{ item.course_subtitle|default_if_none:'' }}"
+                        class="title-data p-3 border w-full border-black" placeholder="Insert your course subtitle">
+                    <span class="absolute right-3 data-cnt top-8">120</span>
+                    <p>Use 1 or 2 related keywords, and mention 3-4 of the most important areas that you've covered
+                        during your course.
+                    </p>
+                </div>
+                <div class="relative">
+                    <label for="" class="font-bold block ">Course description</label>
+                    <textarea name="description" class="border border-black w-full"  rows="10" id="">{{item.course_description|default_if_none:''}}</textarea>
+
+                </div>
+
+                <div>
+                <h4 class="font-bold">Basic info</h4>
+                <div class="flex gap-4 justify-between">
+                    <select name="lavel" class="p-3 font-semibold text-gray-500 text-xl w-3/5 border border-black" id="">
+                        <option value="">Select Level</option>
+                        
+                        <option value="beginner" {% if item.level == "beginner" %} selected {% endif %} > Beginner Level</option>
+                        <option value="intermediate"  {% if item.level == "intermediate" %} selected {% endif %}> Intermediate Level</option>
+                        <option value="expert"  {% if item.level == "expert" %} selected {% endif %} > Expert Level</option>
+                        <option value="all"  {% if item.level == "all" %} selected {% endif %}> All Levels</option>
+                       
+                     </select>
+                    <select name="category" class="p-3 font-semibold text-gray-500 text-xl w-3/5 border border-black" id="">
+                        <option value="">Choose a category</option>
+                        {% for i in category %}
+                        <option value="{{i.category_name}}"  {% if course.category.category_name == i.category_name %} selected {% endif %}>{{i.category_name}}</option>
+                        {% endfor %}
+                     </select>
+                </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold">Course image</h4>
+                    <div class="relative md:flex  justify-between gap-4">
+                        <div class="">
+                        {% if item.coure_image %}
+                        <img src="{{item.coure_image.url}}" class="border  w-[750px] h-[422px] border-gray-400 p-3"
+                        alt="">
+                        {% else %}
+                        
+                        <img src="{% static 'assets/teacher/course_tham.jpg'%}" class="border  w-[750px] h-[422px] border-gray-400 p-3"
+                            alt="">
+                        {% endif %}
+                    </div>
+                    <div class="">
+                        <label for="" class=" font-semibold">Upload your course image here. It must meet our course
+                            image quality standards to be accepted. Important guidelines: 750x422 pixels; .jpg, .jpeg,.
+                            gif, or .png. no text on the image.
+                            <input type="file"
+                                class="border border-black file-input w-full mt-3   rounded-none file-input-md" name="course_image"
+                                placeholder="No file selected" value="{{item.coure_image|default_if_none:''}}" id=""></label>
+
+                              
+                            </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold">Promotional video</h4>
+                    <div class=" md:flex  md:justify-between gap-4">
+                        {% if item.promotional_video %}
+                        <video controls width="400">
+                            <source src="{{item.promotional_video.url }}" type="video/webm" />
+                          
+                            <source src="{{item.promotional_video.url }}" type="video/mp4" />
+                          
+                        
+                          </video>
+                          
+                        {% else %}
+                        <img src="{% static 'assets/teacher/course_tham.jpg'%}" class="border  w-[400px] border-gray-400 p-3"
+                            alt="">
+                        {% endif %}
+                        <label for="" class=" font-semibold">Your promo video is a quick and compelling way for students
+                            to preview what they’ll learn in your course. Students considering your course are more
+                            likely to enroll if your promo video is well-made. Learn how to make your promo video
+                            awesome!
+                            <input type="file"
+                                class="border border-black file-input w-full mt-3   rounded-none file-input-md" name="promotional_video"
+                                placeholder="No file selected" id="" value="{{item.course_video|default_if_none:''}}"></label>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+
+
+    </form>
+</div>
+{% endblock course_data %}

@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>{{course.course.title}}</title>
+{% endblock title %}
+{% block style %}
+<style>
+
+.play-btn {
+   
+    background-size:contain;
+    width: 80px;
+    height: 80px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+ 
+}
+.play-btn.hidden {
+    display: none;
+}
+
+
+</style>
+{% endblock style %}
+
+{% block header %}
+
+<header class="md:container w-[92%] mx-auto  py-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% include "includes/nav.html" %}
+   
+
+</header>
+{% endblock header %}
+
+
+{% block main %}
+<main class="mt-10 mb-10 md:container w-[92%] mx-auto ">
+
+    <div class="w-11/12 mx-auto lg:flex gap-7">
+        <!-- <div class="lg:w-1/2 ">
+            <video controlsList="nodownload"  controls poster="{{course.landing_page.coure_image.url}}"  tabindex="-1">
+                <source  id="videoField" src="{{course.landing_page.promotional_video.url}}" type="video/mp4">
+    
+            </video>
+    
+        </div> -->
+        <div class="lg:w-1/2 ">
+            <div class="relative">
+
+      
+            <!-- Video Container -->
+            <video id="customVideo" controlsList="nodownload"  class="w-full" poster="{{course.landing_page.coure_image.url}}" tabindex="-1">
+                <source id="videoField" src="{{course.landing_page.promotional_video.url}}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Custom Play Button -->
+            <button id="playButton" class="play-btn absolute inset-0 m-auto"><img src="{% static 'assets/logo/play.png' %}" alt=""></button>
+        </div>
+        </div>
+        <div class="space-y-4 ">
+            <h1 class="font-bold text-2xl ">{{course.course.title}}</h1>
+            <p>{{course.landing_page.course_subtitle}}</p>
+    
+            <!-- pricing -->
+            <div class="flex items-center gap-3">
+    
+                <h4 class="font-bold text-2xl"> <i
+                        class="fa-solid fa-bangladeshi-taka-sign"></i>{{course.pricing.after_discount_price}}</h4>
+                <del><i class="fa-solid fa-bangladeshi-taka-sign"></i>{{course.pricing.main_price}}.0</del>
+                <p>{{course.pricing.discount_percent}}% off</p>
+    
+            </div>
+
+             <!-- add to cart  -->
+             <div class=" flex gap-4">
+                {% if request.user.is_authenticated %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input id="dataCartWishList" type="text" name="add-cart" value="" class="hidden">
+                    <button onclick="cartWishListAdd('cart')" type="submit" class="border  border-black py-3 px-6 font-semibold text-2xl hover:bg-slate-100">Add to
+                        cart</button>
+
+                        <button onclick="cartWishListAdd('wishList')" class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                            class=" fa-regular fa-heart"></i></button>
+
+                </form>
+
+                {% else %}
+                <a href="{% url 'login' %}">
+                <button type="submit" class="border  border-black py-3 px-6 font-semibold text-2xl hover:bg-slate-100">Add to
+                    cart</button>
+                    <button class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                        class=" fa-regular fa-heart"></i></button></a>
+                {% endif %}
+                <!-- <button class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                        class=" fa-regular fa-heart"></i></button> -->
+            </div>
+    
+            <!-- what you'll learn -->
+            <div class="border  border-black p-7 my-4">
+                <h1 class="font-bold text-2xl">What you'll learn</h1>
+                <div class="grid grid-cols-2 gap-5 mt-3" id="learn-what-we">
+    
+                    {% for i in lerner %}
+                    
+                    <div class="flex gap-2 top">
+                        <i class="fa-solid fa-check mt-1 mr-3"></i>
+    
+                        <p> {{i}}</p>
+                    </div>
+                   
+                    {% endfor %}
+    
+    
+                </div>
+                <div>
+                    <!-- <h3 class="text-blue-500 font-semibold mt-3 cursor-pointer" onclick="learnWhatFun()">Show more</h3> -->
+                </div>
+            </div>
+    
+            <!-- This course includes: -->
+            <div>
+                <h1 class="text-2xl font-bold mt-5 mb-2">This course includes:</h1>
+                <div class="grid grid-cols-2">
+                    <div ><i class="fa-solid fa-video mr-2"></i> {{course.video_length}} on-demand video</div>
+                   
+    
+                </div>
+            </div>
+        </div>
+    
+        <!-- course content -->
+    </div>
+    <div class="w-11/12 mx-auto">
+        <h1 class="text-2xl font-bold mt-7 mb-2">Course content</h1>
+    
+        <div class="border border-black bg-[#E5E7EB] p-4 my-3 ">
+    
+            {% for mdule in module %}
+    
+            <div class="collapse collapse-arrow border border-base-100  rounded-box mb-4">
+                <input type="checkbox" class="" />
+                <label for="collapse-trigger" class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+                    <div class="flex items-center  space-x-3">
+                        <h4 class="font-bold text-xl ">Module {{forloop.counter}}</h4>
+                        <div class="flex space-x-3 items-center">
+                            <p>{{mdule.title}}</p>
+    
+                        </div>
+    
+                    </div>
+    
+                </label>
+    
+                <div class="collapse-content ">
+                    {% for vid in mdule.videos.all %}
+    
+                    <div class="flex justify-between items-center mb-3">
+                        {% if course.purchanse_course %}
+                        <a href="{% url 'preview_course' uid=uid slug=vid.slug %}" class="flex  items-center gap-4 ">
+                            <i class="fa-solid fa-video "></i>
+                            <p class="link link-primary">{{vid.title}}</p>
+                        </a>
+                        {% else %}
+                        <a  class="flex  items-center gap-4 ">
+                            <i class="fa-solid fa-video "></i>
+                            <p class="">{{vid.title}}</p>
+                        </a>
+                        {% endif %}
+                        <p>{{vid.duration}}</p>
+                    </div>
+    
+                    {% endfor %}
+                </div>
+    
+            </div>
+            {% endfor %}
+        </div>
+    
+        
+        <h1 class="text-2xl font-bold mt-7 mb-2">Requirements</h1>
+        <div>
+            <ul class="list-disc ml-4">
+                <li>{{course.intended_lerner.course_requirement}}</li>
+            </ul>
+        </div>
+    
+        <h1 class="text-2xl font-bold mt-7 mb-2">Description</h1>
+        {% if course.landing_page.course_description %}
+        <span id="short-description">{{course.landing_page.course_description|slice:":300" }}</span>
+        <span id="full-description" class="hidden">
+            {{ course.landing_page.course_description}}
+        </span>
+        <button id="toggle-button" class="link link-primary" onclick="toggleDescription()">Show More</button>
+        {% else %}
+        <p>No Description added</p>
+        {% endif %}
+    
+        <h1 class="text-2xl font-bold mt-7 mb-2">Who this course is for</h1>
+        <div>
+            <ul class="list-disc ml-4">
+                <li>{{course.intended_lerner.who_this_course}}</li>
+            </ul>
+        </div>
+    
+    
+    </div>
+    
+    
+
+</main>
+{% endblock main %}
+
+    
+    {% block js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("customVideo");
+    const playButton = document.getElementById("playButton");
+
+    // Initially show the play button
+    playButton.addEventListener("click", () => {
+        video.play();
+        playButton.classList.add("hidden");
+        video.setAttribute("controls", "controls");
+        video.classList.add("show-controls");
+    });
+
+    // Show play button again when the video is paused
+    video.addEventListener("pause", () => {
+        playButton.classList.remove("hidden");
+        video.removeAttribute("controls");
+        video.classList.remove("show-controls");
+    });
+
+    // Keep controls visible during playback
+    video.addEventListener("play", () => {
+        video.setAttribute("controls", "controls");
+    });
+});
+
+        function toggleDescription() {
+            const shortDesc = document.getElementById('short-description');
+            const fullDesc = document.getElementById('full-description');
+            const button = document.getElementById('toggle-button');
+    
+            if (shortDesc.style.display === 'none') {
+                // Show less
+                shortDesc.style.display = 'inline';
+                fullDesc.style.display = 'none';
+                button.innerText = 'Show More';
+            } else {
+                // Show more
+                shortDesc.style.display = 'none';
+                fullDesc.style.display = 'inline';
+                button.innerText = 'Show Less';
+            }
+        }
+
+        // <!-- Cart Or Wish list -->
+        function cartWishListAdd(data){
+         const dataCartWishList = document.getElementById('dataCartWishList')
+         console.log(data);
+         dataCartWishList.value = data;
+        }
+
+        </script>
+
+     
+    {% endblock js %}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

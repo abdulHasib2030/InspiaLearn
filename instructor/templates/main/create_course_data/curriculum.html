@@ -1,0 +1,224 @@
+{% extends 'main/descrive_course.html' %}
+
+{% block course_data %}
+<div class="w-[90%] mx-auto shadow-xl bg-white p-6 ">
+
+
+
+    <!-- <button class="py-2 px-7 mb-3 bg-[#684FB7] text-white font-semibold text-xl" type="submit">Save</button> -->
+
+    {%for i , j in module%}
+
+    <div class="border border-black bg-[#E5E7EB] p-4 my-3 ">
+<div class="flex items-center  space-x-3">
+                    <h4 class="font-bold text-xl ">Module {{j}}: </h4>
+                    <div class="flex space-x-3 items-center">
+                        <p>{{i.title}}</p>
+                        <i onclick="editModule(this,'{{ j}}')" class="fa-solid fa-pen cursor-pointer"></i>
+                    </div>
+
+                    <div id="module-edit-{{j}}" class="hidden">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input name="module-title-{{j}}" type="text" value="{{i.title}}"
+                                class="border border-black p-3">
+                            <button type="submit"
+                                class="py-2 px-7  bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl">Save</button>
+                        </form>
+                    </div>
+                </div>
+
+        <div class="collapse collapse-arrow border border-base-100  rounded-box">
+            <input type="checkbox" class="" />
+            <label for="collapse-trigger" class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+
+                
+            </label>
+
+            <div class="collapse-content ">
+                {% if video %}
+                {% for vid in video %}
+                {% if forloop.counter == j %}
+                {% for item in vid %}
+                <div id="edit-lecture-{{j}}-{{forloop.counter}}"
+                    class="border border-gray-400 p-4 mt-3 md:flex items-center space-x-3">
+                    <div class="space-x-2 mb-2 md:mb-0">
+                        <i onclick="editLecture('{{j}}','{{forloop.counter}}')"
+                            class="fa-solid fa-pen cursor-pointer md:flex gap-2"> Edit</i>
+                        <a href="{% url 'lecture_delete' uid item.id %}"><i class="fa-solid fa-trash md:flex gap-2">
+                                Delete</i></a>
+                    </div>
+
+                    <div class="hidden">
+                        <form onsubmit="editLecture('{{j}}','{{forloop.counter}}', false)" action="" method="post"
+                            enctype="multipart/form-data" class="space-y-3">
+                            {% csrf_token %}
+                            <div>
+                                <input name="edit-lectureTitle-{{j}}-{{forloop.counter}}" type="text"
+                                    value="{{ item.title|default_if_none:'' }}"
+                                    class="p-3 border w-full border-gray-400">
+                            </div>
+                            <div class="border border-gray-400 p-3 ">
+                                <label for="" class="font-bold">Replace Video</label>
+                                <input name="edit-lectureVideo-{{j}}-{{forloop.counter}}" type="file"
+                                    value="{{item.video_file|default_if_none:''}}">
+                            </div>
+                            <div>
+                                <button type="submit"
+                                    class="py-2 px-7 mt-2 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl">Save</button>
+                                <a onclick="editLecture('{{j}}','{{forloop.counter}}',false)"
+                                    class="py-2 cursor-pointer px-7 mt-2 bg-white text-black border border-gray-400 font-semibold text-xl">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="w-full  mx-auto ">
+                        <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <!-- Collapse Trigger -->
+                            <input type="checkbox" class="" />
+                            <label for="collapse-trigger"
+                                class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+                                <p>Lecture: {{forloop.counter}} {{item.title}}</p>
+
+                            </label>
+
+                            <!-- Collapse Content -->
+                            <div class="collapse-content ">
+                                <video width="320" height="240" controls>
+                                    <source src="{{item.video_file.url}}" type="video/mp4">
+
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% endfor %}
+
+                {% endif %}
+            </div>
+        </div>
+
+            <div id="module-lecture-form-{{j}}" class="hidden border border-gray-400 p-3 mt-3">
+                <form action="" onsubmit="addLecture('{{j}}', false)" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="flex flex-col space-y-2">
+                        <label for="" class="font-semibold ">New Lecture</label>
+                        <input name="lecture-title-{{j}}" type="text" class="border w-full border-gray-400 p-3"
+                            placeholder="Enter a title">
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <label for="" class="font-semibold ">Upload Content </label>
+                        <input name="lecture-video-{{j}}" type="file" placeholder="Upload a video"
+                            class="border border-gray-400 p-3 w-full">
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="py-2 px-7 mt-2 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl">Save</button>
+                        <a onclick="addLecture('{{j}}', false)"
+                            class="py-2 cursor-pointer px-7 mt-2 bg-white text-black border border-gray-400 font-semibold text-xl">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-9 ml-6">
+                <h2 onclick="addLecture('{{j}}')"
+                    class="font-semibold cursor-pointer text-xl w-2/5 border text-center hover:bg-gray-200 border-gray-400 bg-white py-2 px-6">
+                    Add Lecture</h2>
+
+            </div>
+        </div>
+
+
+
+
+        {% endfor %}
+
+        <div id="show-add-module" class="hidden border border-black p-3">
+            <form method="post" class="space-y-3">
+                {% csrf_token %}
+                <div>
+                    <label for="" class="font-bold">New Module</label>
+                    <input name="add-module-title" type="text" placeholder="Enter a module title"
+                        class="p-3 border w-full border-gray-400">
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="py-2 px-7 mt-2 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl">Save</button>
+                    <a onclick="addModule(false)"
+                        class="py-2 cursor-pointer px-7 mt-2 bg-white text-black border border-gray-400 font-semibold text-xl">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="mt-5 ">
+            <h2 onclick="addModule()"
+                class="font-semibold cursor-pointer text-xl w-2/5 border text-center border-gray-400 hover:bg-gray-200 bg-white py-2 px-6">
+                Add Module</h2>
+
+        </div>
+
+
+    </div>
+    {% endblock course_data %}
+
+    {% block js %}
+    <script>
+
+        const addModule = (bool = true) => {
+            const showAddModule = document.getElementById('show-add-module')
+            if (bool === false) {
+                showAddModule.classList.add('hidden')
+                return
+            }
+            showAddModule.classList.remove('hidden')
+        }
+
+        const editLecture = (j, id, bool = true) => {
+            const parent = document.getElementById(`edit-lecture-${j}-${id}`)
+            if (bool === false) {
+                parent.children[1].classList.add('hidden')
+                parent.children[2].classList.remove('hidden')
+                return
+            }
+            parent.children[1].classList.remove('hidden')
+            parent.children[2].classList.add('hidden')
+        }
+
+        const addLecture = (id, bool = true) => {
+            const visibleLectureForm = document.getElementById(`module-lecture-form-${id}`)
+            if (bool === false) {
+                visibleLectureForm.classList.add('hidden')
+                return
+            }
+            if (visibleLectureForm) {
+                visibleLectureForm.classList.remove('hidden')
+            }
+        }
+
+        function editModule(element, id) {
+            // Get the edit form for the module
+            const visibleEditModule = document.getElementById(`module-edit-${id}`);
+
+            // Hide the current content
+            const parentDiv = element.closest('.flex'); // Adjust to target the correct parent div
+            if (parentDiv) {
+                parentDiv.classList.add('hidden'); // Hide the content area
+            }
+
+            // Show the edit form
+            if (visibleEditModule) {
+                visibleEditModule.classList.remove('hidden');
+            }
+
+        }
+    </script>
+    {% endblock js %}

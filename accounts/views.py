@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 import urllib.parse
 import requests
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
 # Create your views here.
 
 

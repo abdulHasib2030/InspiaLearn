@@ -1,0 +1,29 @@
+{% extends 'main/descrive_course.html' %}
+
+{% block course_data %}
+<div class="w-[90%] mx-auto shadow-xl  bg-white pb-6">
+    <div >
+        <h1 class="pt-3 px-8 text-2xl font-bold">Course messages </h1>
+        <div class="divider divider-gray-400 w-full"></div>
+        <form action="" method="post">
+            {% csrf_token %}
+        <div class="w-11/12 mx-auto space-y-4">
+            <p>
+                Write messages to your students (optional) that will be sent automatically when they join or complete
+                your course to encourage students to engage with course content. If you do not wish to send a welcome or
+                congratulations message, leave the text box blank.
+            </p>
+            <label for="" class="font-bold block ">Welcome Message </label>
+            <textarea name="welcome_msg" class="border p-1 border-black w-full"
+                id="">{{item.welcomeMsg|default_if_none:''}}</textarea>
+            <label for="" class="font-bold block ">Congratulations Message</label>
+            <textarea name="congrat_msg" class="border p-1 border-black w-full" 
+                id="">{{item.congratMsg|default_if_none:''}}</textarea>
+        
+        <button class="py-2 px-7 mb-3 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl" type="submit">Save</button>
+        
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock course_data %}

@@ -1,0 +1,132 @@
+{% extends 'instructor.html' %}
+
+{% block style %}
+<style>
+      .step { display: none; }
+      .step.active { display: block; }
+</style>
+{% endblock style %}
+
+{% block instructor %}
+<div>
+   <div class="shadow-xl border border-black w-4/5 items-center mx-auto  p-5 my-7 ">
+
+      <form method="POST" id="courseCreate">
+         {% csrf_token %}
+
+         <div class="step {% if step == 1 %}active{% endif %} space-y-7">
+            <h2 class="text-2xl font-bold">How about a course title?</h2>
+            <p class="font-semibold">It's ok if you can't of a good title now. You can change it later.</p>
+            <div class="relative">
+               <input id="title-data" name="title" type="text" maxlength="60" {% if title %} value="{{title}}" {% endif %} class="p-3 border w-full border-black"
+                  placeholder="e.g. Learn Web Development from Scratch">
+               <span id="data-cnt" class="absolute right-3 top-2">60</span>
+            </div>
+            <button type="submit" class="bg-[#684FB7] px-6 py-2 font-semibold text-xl text-white">Next</button>
+         </div>
+
+         <div class="step {% if step == 2 %}active{% endif %} space-y-7">
+            <h2 class="text-2xl font-bold">What category best fits the knowledge you'll share?</h2>
+            <p class="font-semibold">If you're not sure about the right category, you can change it later.</p>
+           <div>
+            <select name="category" class="p-3 font-semibold text-gray-500 text-xl w-3/5 border border-black" id="">
+               <option value="">Choose a category</option>
+               {% for i in category %}
+               <option value="{{i.category_name}}"  {% if category_name == i.category_name %} selected {% endif %}>{{i.category_name}}</option>
+               {% endfor %}
+            </select>
+           </div>
+             <div class="flex justify-between">
+                <a href="/instructor/course/create/?step=1" class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold ">Previous</a>
+                <button class="bg-[#684FB7] px-6 py-2 font-semibold text-xl text-white">Next</button>
+             </div>
+         </div>
+         <div class="step {% if step == 3 %}active{% endif %} space-y-7">
+            <h2 class="text-2xl font-bold">How much time can you spend your course?</h2>
+            <p class="font-semibold">There's no wrong answer. We can help you achieve your goals even if you don't have much time.</p>
+        
+            <div class="border border-black p-3 text-xl font-semibold">
+               <label>
+                   <input type="radio" name="time" {% if time == '0-2 Hours' %}checked {% endif %} value="0-2 Hours"> 0-2 Hours
+               </label>
+           </div>
+           <div  class="border border-black p-3 text-xl font-semibold">
+            <label>
+                <input type="radio" name="time" {% if time == '2-4 Hours' %}checked {% endif %} value="2-4 Hours"> 2-4 Hours
+            </label>
+        </div>
+        <div  class="border border-black p-3 text-xl font-semibold">
+            <label>
+                <input type="radio" name="time" {% if time == '5+ Hours' %}checked {% endif %}  value="5+ Hours"> 5+ Hours
+            </label>
+        </div>
+        <div  class="border border-black p-3 text-xl font-semibold">
+            <label>
+                <input type="radio" name="time" {% if time == "I haven't yet decided if i have time" %}checked {% endif %}  value="I haven't yet decided if i have time"> I haven't yet decided if i have time
+            </label>
+        </div>
+
+             <div class="flex justify-between">
+                <a href="/instructor/course/create/?step=2" class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold ">Previous</a>
+                <button class="bg-[#684FB7] px-6 py-2 font-semibold text-xl text-white">Next</button>
+             </div>
+         </div>
+
+
+      </form>
+
+   </div>
+</div>
+{% endblock instructor %}
+
+{% block js %}
+<script>
+
+// window.onpageshow = function(event) {
+//     if (event.persisted) {
+//         window.location.reload();
+//     }
+// };
+
+
+function nextStep(step) {
+            // Submit the form and move to the next step
+            var form = document.getElementById("courseCreate");
+            form.action = "?step=" + step;  // Change the action to the next step
+            form.submit();
+        }
+
+        function previousStep(step) {
+            // Change to the previous step
+            var form = document.getElementById("courseCreate");
+            form.action = "?step=" + step;  // Change the action to the previous step
+            form.submit();
+        }
+
+
+
+
+   const titleData = document.getElementById('title-data')
+   const dataCnt = document.getElementById('data-cnt')
+   let cnt = 60;
+   let curr = 0;
+   titleData.addEventListener('input', function (e) {
+      const inputLength = e.target.value.length
+      console.log(inputLength)
+      if (curr < inputLength) {
+         cnt -= 1
+         curr = inputLength
+      }
+      else {
+         cnt += 1
+         curr = inputLength
+      }
+
+      dataCnt.innerText = cnt
+
+
+   })
+
+
+</script>
+{% endblock js %}

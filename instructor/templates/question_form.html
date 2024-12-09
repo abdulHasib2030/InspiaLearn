@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    .step {
+        display: none;
+    }
+
+    .step.active {
+        display: block;
+    }
+</style>
+{% endblock style %}
+{% block main %}
+<!-- question_form.html -->
+<div class=" flex flex-col items-center min-h-screen">
+    <!-- Logo section at the top -->
+    <div class="mt-8">
+        <a href="{% url 'home' %}">
+            <img src="{% static './assets/logo/thj_school.png' %}" class="w-44 mx-auto" alt="">
+        </a>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Content section centered in the page -->
+    <div class="flex-grow  flex items-center justify-center text-center">
+
+        <form method="POST" id="instructorRegiserFrom">
+            {% csrf_token %}
+
+            <div class="space-y-5 step {% if step == 1 %}active{% endif %}">
+                <h4 class="font-bold text-2xl">Welcome {{request.user.username}}</h4>
+                <h1 class="font-semibold text-3xl w-4/5 mx-auto">Thanks for your interest in teaching on THJ Academy
+                </h1>
+                <p class="text-[#E6326F] font-bold text-3xl">What kind of teaching have you done before?</p>
+                <div class="border border-black p-3 text-xl font-semibold">
+                    <label>
+                        <input type="radio" name="teaching_before" {% if teaching_before == 'In person, informally' %}checked {% endif %} value="In person, informally"> In person,, informally
+                    </label>
+                </div>
+                <div  class="border border-black p-3 text-xl font-semibold">
+                    <label>
+                        <input type="radio" name="teaching_before" {% if teaching_before == 'In person, professionally' %}checked {% endif %} value="In person, professionally"> In person, professionally
+                    </label>
+                </div>
+                <div  class="border border-black p-3 text-xl font-semibold">
+                    <label>
+                        <input type="radio" name="teaching_before" {% if teaching_before == 'Online' %}checked {% endif %}  value="Online"> Online
+                    </label>
+                </div>
+                <div  class="border border-black p-3 text-xl font-semibold">
+                    <label>
+                        <input type="radio" name="teaching_before" {% if teaching_before == 'Other' %}checked {% endif %}  value="Other"> Other
+                    </label>
+                </div>
+
+
+
+                <div class="justify-end">
+                    <button type="submit" class="bg-[#684FB7] py-2 px-6 text-xl text-white font-bold">Next</button>
+
+                </div>
+
+            </div>
+            <div class="space-y-5 step {% if step == 2 %}active{% endif %}">
+                <p class="text-[#E6326F] font-bold text-3xl">What type of experience you?</p>
+
+                <select name="experience" id="categorySelect" class="border w-full border-black py-3 px-6 font-semibold text-xl">
+                    <option value="Beginner" {% if experience == 'Beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="Intermediate" {% if experience == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="Expert" {% if experience == 'Expert' %}selected{% endif %}>Expert</option>
+                </select>
+                </select>
+                <div class="flex justify-between">
+                    <a href="/instructor/create/?step=1" class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold ">Previous</a>
+                    <button type="submit" class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold">Next</button>
+
+                </div>
+
+            </div>
+
+            <div class="space-y-5 step {% if step == 3 %}active{% endif %}">
+                <input type="checkbox"  {% if terms %} checked {% endif %} name="terms"  class="">
+                <p class="font-bold text-3xl ">Accept terms & conditions.</p>
+                <div class="flex justify-between">
+                    <a href="/instructor/create/?step=2"class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold ">Previous</a>
+                    <button type="submit" class="bg-[#684FB7] text-white  py-2 px-6 text-xl font-bold">Next</button>
+
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+{% endblock main %}
+
+{% block js %}
+<script>
+
+    function nextStep(step) {
+        // Submit the form and move to the next step
+        var form = document.getElementById("instructorRegiserFrom");
+        form.action = "?step=" + step;  // Change the action to the next step
+        form.submit();
+    }
+
+    function previousStep(step) {
+        // Change to the previous step
+        var form = document.getElementById("instructorRegiserFrom");
+        form.action = "?step=" + step;  // Change the action to the previous step
+        form.submit();
+    }
+
+
+  </script>
+
+{% endblock js %}

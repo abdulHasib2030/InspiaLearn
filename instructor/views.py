@@ -1,3 +1,463 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect, get_object_or_404
+from instructor.forms import QuestionForm1, QuestionForm2, QuestionForm3
+from category.models import Category
+from instructor.models import instructorRegister, courseCreateFirstStep, intendedLearner, Module,Video, landingPage, Pricing, welcomeCongratMessages, publishCourse
 # Create your views here.
+# views.py
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils.encoding import smart_str, force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from PIL import Image
+
+
+def instructor_view(request):
+    allCourse = courseCreateFirstStep.objects.filter(instructor__user = request.user)
+    if(request.user.is_authenticated):
+
+        return render(request, 'main/course.html', {'allCourse': allCourse})
+    else:
+        return redirect('home')
+
+
+
+def instructorRegisterView(request):
+    step = int(request.GET.get('step', 1))
+    try:
+        user = User.objects.get(username = request.user)
+
+        try:
+            instructor = instructorRegister.objects.get(user = user)
+            messages.warning(request, "Already Instructed Account Created.")
+            return redirect('home')
+            
+        except instructorRegister.DoesNotExist:
+            if request.method == 'POST':
+                if step == 1:
+                    # Get data from the first step and store it in the session
+                    teaching_before = request.POST.get('teaching_before', '')
+                    request.session['teaching_before'] = teaching_before
+                    print(teaching_before)
+                    return redirect(f'/instructor/create/?step=2')  # Redirect to next step
+                
+                elif step == 2:
+                    # Get data from the second step and store it in the session
+                    experience = request.POST.get('experience', '')
+                    request.session['experience'] = experience
+                    return redirect(f'/instructor/create/?step=3')  # Redirect to next step
+                
+                elif step == 3:
+                    # Get data from the third step and store it in the session
+                    terms = request.POST.get('terms', '')
+                    print(terms)
+                    if (terms == ''):
+                        messages.error(request, "can't empty terms & conditions.")
+                        return redirect(f'/instructor/create/?step=3')
+                    request.session['terms'] = terms
+                    teaching_before = request.session.get('teaching_before', '')
+                    experience = request.session.get('experience', '')
+                   
+                    if terms:
+                        terms = True
+                    
+                    experience = experience.lower()
+
+                    instructorRegister.objects.create(user= user, teaching_before=teaching_before, experience = experience, terms_conditions= terms)
+                    return redirect('instructor')  # Redirect to success page after final submission
+
+        # Retrieve saved data from the session for each step
+    except User.DoesNotExist:
+        return redirect('login')
+    
+    teaching_before = request.session.get('teaching_before', '')
+    experience = request.session.get('experience', '')
+    terms = request.session.get('terms', '')
+    
+
+
+    return render(request, 'question_form.html', { 'step': step, 
+                                               'teaching_before' : teaching_before,
+                                                'experience':experience,
+                                                'terms':terms,
+                                                  })
+flag = True
+def courseCreate(request):
+    step = int(request.GET.get('step', 1))
+    category = Category.objects.all()
+    
+    # print(flag)
+    global flag
+    if ( flag):
+        if request.user.is_authenticated:
+            if request.method == 'POST':
+                    if step == 1:
+                        # Get data from the first step and store it in the session
+                        title = request.POST.get('title', '')
+                        request.session['title'] = title
+                        print(title)
+                        return redirect(f'/instructor/course/create/?step=2')  # Redirect to next step
+                    
+                    elif step == 2:
+                        # Get data from the second step and store it in the session
+                        category_name = request.POST.get('category', '')
+                        request.session['category_name'] = category_name
+                        return redirect(f'/instructor/course/create/?step=3')  # Redirect to next step
+                    
+                    elif step == 3:
+                        time = request.POST.get('time', '')
+                        request.session['time'] = time
+                        title = request.session.get('title', '')
+                        category_name = request.session.get('category_name', '')
+                        time = request.session.get('time', '')
+                        instructor = instructorRegister.objects.get(user = request.user)
+                        category_ = Category.objects.get(category_name = category_name)
+                        user, created = courseCreateFirstStep.objects.get_or_create(instructor = instructor, title = title, category = category_, time= time)
+                        uid = urlsafe_base64_encode(force_bytes(user.id))
+                        user.uid = uid
+                        user.save()
+                        Module.objects.create(course = user, title = 'Introduction' )
+                        # print(uid)
+                        # print(smart_str(urlsafe_base64_decode(uid)))
+                        flag = False
+
+                        del request.session['title']
+                        del request.session['category_name']
+                        del request.session['time']
+
+                        return redirect(f'/instructor/course/create/{uid}/intended-learner/') 
+        else:      
+            return redirect('home')
+    else:
+        flag = True
+        return redirect('instructor')
+    title = request.session.get('title', '')
+    category_name = request.session.get('category_name', '')
+    time = request.session.get('time', '')
+
+    return render(request, 'main/create_course.html', {'category': category, 
+                                                       'step':step,
+                                                       'title':title,
+                                                       'category_name':category_name,
+                                                       'time':time,
+                                                       })
+
+def descriveCourseCreateView(request, uid):
+    print("Hi Abdul ", uid)
+    return render(request, 'main/descrive_course.html', {'uid': uid})
+
+def courseCurriculum(request, uid):
+
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    module, video = None, []
+
+    try: 
+        module = Module.objects.filter(course= course)
+    except Module.DoesNotExist:
+        module = None
+    cnt = 1
+    if request.method == 'POST':
+        addModuleTitle = request.POST.get('add-module-title')
+        if addModuleTitle:
+            Module.objects.create(course = course, title = addModuleTitle)
+            return redirect('curriculum', uid)
+        for i in module:
+            moduleTitle = request.POST.get(f'module-title-{cnt}', '')
+            lectureTitle = request.POST.get(f'lecture-title-{cnt}', '')
+            lectureVideo = request.FILES.get(f'lecture-video-{cnt}', '')
+            # Initialize progress tracking
+            # cache.set('upload_progress', 0)
+            # total_steps = 5
+
+            # # Simulate file processing steps
+            # for step in range(1, total_steps + 1):
+            #     time.sleep(1)  # Simulate processing time
+            #     progress = int((step / total_steps) * 100)
+            #     cache.set('upload_progress', progress)
+
+            editCnt = 1
+            editVideo = Video.objects.filter(module = i)
+            for edit in editVideo:
+                editLectureTitle = request.POST.get(f'edit-lectureTitle-{cnt}-{editCnt}')
+                editLectureVideo = request.FILES.get(f'edit-lectureVideo-{cnt}-{editCnt}')
+                editCnt += 1
+                if editLectureTitle:
+                    edit.title = editLectureTitle
+                    edit.save()
+                if editLectureVideo:
+                    edit.video_file = editLectureVideo  
+                    edit.save()
+
+            # print(moduleTitle)
+            if (moduleTitle):
+                i.title = moduleTitle
+                i.save()
+                return redirect('curriculum', uid)
+            if (lectureVideo and lectureTitle):
+                vid = Video(module = i, title = lectureTitle,video_file=lectureVideo)
+                vid.save()
+                # return JsonResponse({'message': 'Upload complete!'})
+                return redirect('curriculum', uid)
+            # else:
+            #     messages.error(request, "Invalid Data provide")
+            #     return redirect('curriculum', uid)
+            cnt += 1
+
+    lst = []
+    for i, j  in zip(range(len(module)), module):
+        lst.append(i+1)
+        video_ = Video.objects.filter(module = j)
+        temp = []
+        for k in video_:
+            temp.append(k)
+        video.append(temp)
+    module = zip(module, lst)
+    
+    
+    return render(request, 'main/create_course_data/curriculum.html', {"uid": uid, 'module':module, 'video':video})
+
+def lectureDelete(request, uid, lectureId ):
+    item = get_object_or_404(Video, id = lectureId)
+    print(item)
+    item.delete()
+    messages.success(request, "Lecture delete successfully")
+    return redirect('curriculum', uid)
+
+def courseIntendedLernerView(request, uid, pk = None):
+    # item = get_object_or_404(intendedLearner, pk = pk) if pk else None
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    item = None
+    try: 
+        item = intendedLearner.objects.get(course= course)
+    except intendedLearner.DoesNotExist:
+        item = None
+        
+    if request.method == 'POST':
+        student_learn_1 = request.POST.get('student_learn_1', '')
+        student_learn_2 = request.POST.get('student_learn_2', '')
+        student_learn_3 = request.POST.get('student_learn_3', '')
+        student_learn_4 = request.POST.get('student_learn_4', '')
+        course_requirement = request.POST.get('course_requirement', '')
+        who_this_course = request.POST.get('who_this_course', '')
+        if item:
+            item.student_learn_1 = student_learn_1
+            item.student_learn_2 = student_learn_2
+            item.student_learn_3 = student_learn_3
+            item.student_learn_4 = student_learn_4
+            item.course_requirement = course_requirement
+            item.who_this_course = who_this_course
+            messages.success(request, "Successfully updated.")
+        else:
+            
+            item = intendedLearner(course = course, student_learn_1 = student_learn_1, student_learn_2 = student_learn_2, student_learn_3 = student_learn_3, student_learn_4 = student_learn_4,course_requirement =course_requirement,who_this_course = who_this_course  )
+            messages.success(request, "Successfully added.")
+        item.save()
+        
+    return render(request, 'main/create_course_data/intended_lerner.html', {"uid": uid, 'item':item})
+
+def courseLandingPageView(request, uid):
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    print(course.category.category_name)
+   
+    try: 
+        item = landingPage.objects.get(course= course)
+    except landingPage.DoesNotExist:
+        item = None
+    if request.method == 'POST':
+        title = request.POST.get('title', '')
+        course.title = title
+        
+        subtitle = request.POST.get('subtitle', '')
+        description = request.POST.get('description', '')
+        lavel = request.POST.get('lavel', '')
+        category = request.POST.get('category')
+        course_image = request.FILES.get('course_image', '')
+        promotional_video = request.FILES.get('promotional_video', '')
+        if category:
+            categoryName = Category.objects.get(category_name = category)
+            course.category = categoryName
+        else:
+            messages.error(request, "Can't empty category")
+            return redirect('landing_page', uid)
+        if item:
+            item.title = title
+            item.course_subtitle = subtitle
+            item.course_description = description
+            item.level = lavel
+
+            if course_image:
+                img = Image.open(course_image)
+                width, height = img.size
+                if width != 750 or height != 422:
+                    messages.error(request, "Upload specific size image")
+                    return redirect('landing_page', uid) 
+                item.coure_image = course_image
+            if promotional_video:
+                item.promotional_video = promotional_video  
+            messages.success(request, "Successfully updated.")         
+        else: 
+            img = Image.open(course_image)
+            width, height = img.size
+            if width != 750 or height != 422:
+                messages.error(request, "Upload specific size image")
+                return redirect('landing_page', uid) 
+            item = landingPage(course = course,title = title, course_subtitle = subtitle,  course_description = description, level =lavel,  coure_image =course_image, promotional_video = promotional_video )
+            messages.success(request, "Successfully added.")
+        item.save()
+        print(category, course.category.category_name)
+        course.save()
+    category = Category.objects.all()
+    
+    return render(request, 'main/create_course_data/landingPage.html', {"uid": uid, 'item': item, 'course':course, 'category':category})
+
+def coursePricingView(request, uid):
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    try: 
+        item = Pricing.objects.get(course= course)
+    except Pricing.DoesNotExist:
+        item = None
+    if request.method == 'POST':
+        main_price = request.POST.get('main_price', '') 
+        discount = request.POST.get('discount', '')
+        after_discount = 0 
+        if main_price == '':
+            messages.error(request, "Can't empty course price field.")
+            return redirect('pricing', uid)
+        if main_price and discount:
+            after_discount =  str(int(main_price) - (int(main_price) * (int(discount) / 100)))
+        
+
+        if item:
+            item.main_price = main_price
+            item.discount_percent = discount
+            item.after_discount_price = after_discount
+            messages.success(request, "Successfully updated")
+        else:
+            item = Pricing(course = course, main_price = main_price, discount_percent = discount, after_discount_price  = after_discount)
+            messages.success(request, "Successfully added.")
+        item.save()
+    # print(item.after_discount_price)
+    return render(request, 'main/create_course_data/pricing.html', {"uid": uid, 'item':item})
+
+def courseMessagesView(request, uid):
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    try: 
+        item = welcomeCongratMessages.objects.get(course= course)
+    except welcomeCongratMessages.DoesNotExist:
+        item = None
+    if request.method == 'POST':
+        welcomeMsg = request.POST.get('welcome_msg', '')
+        congratMsg = request.POST.get('congrat_msg', '')
+        if item:
+            item.welcomeMsg = welcomeMsg
+            item.congratMsg = congratMsg
+            messages.success(request, "Successfully updated")
+        else:
+            item = welcomeCongratMessages(course = course, welcomeMsg = welcomeMsg, congratMsg = congratMsg )
+            messages.success(request, "Successfully added.")
+        item.save()
+        
+
+    return render(request, 'main/create_course_data/messages.html', {"uid": uid, 'item': item})
+
+
+#  ### Preview course
+def previewCourseView(request, uid, slug=None):
+    course = courseCreateFirstStep.objects.get(uid=uid)
+    lerner = []
+    try:
+        indentend_lerner = intendedLearner.objects.get(course=course)
+        if indentend_lerner.student_learn_1:
+            lerner.append(indentend_lerner.student_learn_1)
+        if indentend_lerner.student_learn_2:
+            lerner.append(indentend_lerner.student_learn_2)
+        if indentend_lerner.student_learn_3:
+            lerner.append(indentend_lerner.student_learn_3)
+        if indentend_lerner.student_learn_4:
+            lerner.append(indentend_lerner.student_learn_4)
+    except intendedLearner.DoesNotExist:
+        lerner  = []
+    try:
+        pricing = Pricing.objects.get(course=course)
+        module = Module.objects.filter(course= course)
+        landingpage = landingPage.objects.get(course = course)
+        welcomeMsg = welcomeCongratMessages.objects.get(course = course)
+        
+    except Pricing.DoesNotExist or Module.DoesNotExist or landingPage.DoesNotExist or welcomeCongratMessages.DoesNotExist:
+        pricing = None
+        module = None
+        landingpage = None
+        welcomeMsg = None
+    video = []
+    video_length = 0
+    totalLecture = 0
+    if module:
+        for i in module:
+            vide =Video.objects.filter(module= i)
+            temp = []
+            for j in vide:
+                totalLecture += 1
+                temp.append(j.video_file.url)
+                minutes, seconds = map(int, j.duration.split(":"))
+                video_length += minutes + (seconds/100)
+                # print(type(minutes), seconds)
+            video.append(temp)
+    
+  
+    temp  = video_length
+    if temp >= 60:
+        video_length = temp // 60
+        video_length = "%.2f"%video_length + " hours"
+    else:
+        video_length = "%.2f"%video_length + " minutes"
+
+    if slug:
+        demo_pro_video = Video.objects.get(slug = slug)
+        promotional_video = demo_pro_video.video_file
+    else:
+        promotional_video = landingpage.promotional_video
+    
+    if request.method == 'POST':
+        if len(lerner) < 4 or indentend_lerner.course_requirement == '' or indentend_lerner.who_this_course == '':
+            messages.error(request, "Filled Up intended lerners data")
+            return redirect('intended_lerner', uid)
+        elif landingpage.title == '' or landingpage.course_subtitle == '' or landingpage.course_description == '' or landingpage.level == '' or landingpage.coure_image == '' or landingpage.promotional_video == '':
+            messages.error(request, "Filled Up landing page data")
+            return redirect('landing_page', uid)
+        elif pricing.main_price == '' or pricing.discount_percent == '' or pricing.after_discount_price == '':
+            messages.error(request, "Filled Up course pricing data")
+            return redirect('pricing', uid)
+        elif welcomeMsg.welcomeMsg == '' or welcomeMsg.congratMsg == '':
+            messages.error(request, "Filled Up Course messages data")
+            return redirect('messages', uid)
+        course.publish_true = True
+        course.save()
+        print(totalLecture)
+        try: 
+            publshcourse = publishCourse.objects.get(course=course)
+            publshcourse.video_length = video_length
+            publshcourse.totalLecture = str(totalLecture)
+            print(publshcourse.totalLecture)
+            publshcourse.save()
+            messages.success(request, "Updated successfully.")
+            return redirect("preview_course", uid)
+        except publishCourse.DoesNotExist:
+            publishCourse.objects.create(course=course, intended_lerner = indentend_lerner, landing_page=landingpage,pricing=pricing, msg=welcomeMsg, video_length=video_length,totalLecture= str(totalLecture ) )
+            messages.success(request, "Successfully pulish your course.")
+    context = {
+        "uid": uid,
+        'promotional_video':promotional_video,
+        "title": course.title,
+        "subtitle": landingpage.course_subtitle,
+        'lerner':lerner,
+        'pricing':pricing,
+        'module': module,
+        'description': landingpage.course_description,
+        'video': video,
+        'requirement': indentend_lerner.course_requirement,
+        'who_this_course': indentend_lerner.who_this_course,
+        'video_length':video_length,
+    }
+    
+    return render(request, 'main/create_course_data/previewCourse.html',  context)
+
