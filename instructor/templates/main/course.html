@@ -5,35 +5,22 @@
 {% load static %}
 {% block instructor %}
 <div>
-   <div class="shadow-xl border border-black flex justify-between w-4/5 mx-auto items-center p-5 my-7">
+   <div class="shadow-xl border border-black md:flex justify-between  w-4/5 mx-auto items-center p-5 my-7">
 
-      <h4 class="font-semibold text-xl ">Jump Into Course Creation</h4>
+      <h4 class="font-semibold text-xl md:mb-0 mb-4 ">Jump Into Course Creation</h4>
       <a href="{% url 'course-create' %}">
          <button class="py-3 px-7 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold">Create Your Course</button>
       </a>
 
    </div>
-   <!-- {% for i in allCourse %}
-      <div class="shadow-xl border border-gray-400 flex justify-between w-4/5 mx-auto items-center p-5 my-7 ">
-
-        <img src="{% static 'assets/logo/thj_school.png' %}" alt="">
-         <div class="space-y-3">
-            <h1 class="text-xl font-bold">{{i.title}}</h1>
-            <h4 class="font-semibold text-xl">
-              Category: {{i.category.category_name}}
-            </h4>
-
-         </div>
-
-      </div>
-      {% endfor %} -->
+   
 
    {% for i in allCourse %}
    <div
       class="shadow-xl border  border-gray-400 md:flex justify-between w-4/5 mx-auto items-center p-5 my-7 relative group">
 
       <!-- Main content (always visible) -->
-      <img src="{% static 'assets/logo/thj_school.png' %}" alt="">
+      <img src="{% static 'assets/teacher/course_tham.jpg'%}" class="w-52" alt="">
       <div class="space-y-3">
          <h1 class="text-xl font-bold">{{ i.title }}</h1>
          <h4 class="font-semibold text-xl">

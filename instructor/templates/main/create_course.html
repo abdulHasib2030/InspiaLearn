@@ -9,7 +9,7 @@
 
 {% block instructor %}
 <div>
-   <div class="shadow-xl border border-black w-4/5 items-center mx-auto  p-5 my-7 ">
+   <div class="shadow-xl border border-black w-11/12 items-center mx-auto  p-5 my-7 ">
 
       <form method="POST" id="courseCreate">
          {% csrf_token %}
@@ -81,12 +81,6 @@
 
 {% block js %}
 <script>
-
-// window.onpageshow = function(event) {
-//     if (event.persisted) {
-//         window.location.reload();
-//     }
-// };
 
 
 function nextStep(step) {

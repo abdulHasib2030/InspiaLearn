@@ -66,7 +66,12 @@
      {% endblock js %}
  
      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-    
+    <script>
+        function msgCloseBtn(){
+            const parentDiv = document.getElementById('msg-close')
+            parentDiv.classList.add('hidden')
+        }
+    </script>
 
 </body>
 </html>

@@ -13,4 +13,3 @@ function togglePassword(fieldId, iconId) {
     }
 }
 
-

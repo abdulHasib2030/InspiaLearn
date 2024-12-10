@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from category.models import Category
 import json
 from django.http import JsonResponse
+import re
 
 
 def google_login(request):
@@ -159,8 +160,17 @@ def signUpPageView(request):
         email =  request.POST.get('email')
         password =  request.POST.get('password')
         confirm_password =  request.POST.get('password2')
-        if len(password) < 6 :
-            messages.error(request, "you don't password less than 6")
+        request.session['name'] = name
+        request.session['email'] = email
+        if (name == ''):
+            messages.error(request, "Provide your name.")
+            return redirect('signup')
+        if (email == ''):
+            messages.error(request, "Provide email address")
+            return redirect('signup')
+        pattern = r"^(?=.*[a-z])(?=.*[A-Z]).{6,}$"
+        if len(password) < 6 or bool(re.match(pattern, password)) == False:
+            messages.error(request, "Password must meet one Uppercase, lowercase letter and at least 6 chanacters long.")
             return redirect('signup')
         if password != confirm_password:
             messages.error(request, 'Password and confirm password do not match.')
@@ -174,9 +184,15 @@ def signUpPageView(request):
             user.set_password(password)
             user.save()
             
-        login(request, user)
-        return redirect('http://127.0.0.1:8000'+url)
-    return render(request, 'signup.html')
+            login(request, user)
+            return redirect('http://127.0.0.1:8000'+url)
+    name = request.session.get('name')
+    email = request.session.get('email')
+    context = {
+       "name": name,
+       "email": email
+    }
+    return render(request, 'signup.html', context)
 
 #  Login View
 def loginView(request):
