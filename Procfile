@@ -1,1 +1,2 @@
-web: python manage.py migrate && gunicorn InspiaLearn.wsg
+web: gunicorn InspiaLearn.wsgi
+
