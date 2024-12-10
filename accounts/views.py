@@ -39,7 +39,7 @@ def oauth2callback(request):
     print(url)
     code = request.GET.get('code')
     if not code:
-        return redirect('https://inspialearn.onrender.com'+url)
+        return redirect('http://127.0.0.1:8000'+url)
     token_url = 'https://oauth2.googleapis.com/token'
     token_data = {
         'code': code,
@@ -53,7 +53,7 @@ def oauth2callback(request):
     token_json = token_response.json()
     access_token = token_json.get('access_token')
     if not access_token:
-        return redirect('https://inspialearn.onrender.com'+url)
+        return redirect('http://127.0.0.1:8000'+url)
     user_info_url = 'https://www.googleapis.com/oauth2/v3/userinfo'
     user_info_params = {'access_token': token_json['access_token']}
     user_info_response = requests.get(user_info_url, params=user_info_params)
@@ -68,14 +68,14 @@ def oauth2callback(request):
     try: 
         existing_usr = User.objects.get(email = email)
         login(request, existing_usr)
-        return redirect('https://inspialearn.onrender.com'+url)
+        return redirect('http://127.0.0.1:8000'+url)
     except User.DoesNotExist:
         user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
 
     # Log the user in
         login(request, user)
     
-        return redirect('https://inspialearn.onrender.com'+url)
+        return redirect('http://127.0.0.1:8000'+url)
  
  
 def showCategoryCourse(request):
@@ -185,7 +185,7 @@ def signUpPageView(request):
             user.save()
             
             login(request, user)
-            return redirect('https://inspialearn.onrender.com'+url)
+            return redirect('http://127.0.0.1:8000'+url)
     name = request.session.get('name')
     email = request.session.get('email')
     context = {
@@ -212,7 +212,7 @@ def loginView(request):
         print(user)
         if user:
             login(request, user)
-            return redirect('https://inspialearn.onrender.com'+url)
+            return redirect('http://127.0.0.1:8000'+url)
         else:
             messages.error(request, 'Login Email or password not valid.')
 
@@ -223,7 +223,8 @@ def loginView(request):
 def logoutView(request):
     url = (request.GET.get('next', '/'))
     logout(request)
-    return redirect('https://inspialearn.onrender.com'+url)
+    # return redirect('http://127.0.0.1:8000'+url)
+    return redirect('home')
 
 # ### details course page
 def detailsCoursePageView(request, uid):

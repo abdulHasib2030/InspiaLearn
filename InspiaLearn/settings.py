@@ -163,6 +163,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID_")
 GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET_")
-GOOGLE_REDIRECT_URI = env("GOOGLE_REDIRECT_URI_")
+# GOOGLE_REDIRECT_URI = env("GOOGLE_REDIRECT_URI_")
 
-
+GOOGLE_REDIRECT_URI= 'https://inspialearn.onrender.com/oauth2callback/'
