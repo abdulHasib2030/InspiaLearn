@@ -23,7 +23,7 @@ import os
 SECRET_KEY = 'django-insecure-*o-mjxy_3mzcd5c2*ov1d8h_7wmatcwc&2@mx6@lfx13t==e-r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'InspiaLearn.wsgi.application'
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# import dj_database_url
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'InspiaLearn.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://inspialearn_user:6uZ18cLcsgzSjF3wzBG8icDnUKSebTOB@dpg-ctc2ott2ng1s73bt6t8g-a/inspialearn',
+        default='postgresql://inspialearn_user:6uZ18cLcsgzSjF3wzBG8icDnUKSebTOB@dpg-ctc2ott2ng1s73bt6t8g-a.singapore-postgres.render.com/inspialearn',
         conn_max_age=600
     )
 }
