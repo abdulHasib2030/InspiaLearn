@@ -19,7 +19,6 @@ import re
 from accounts.models import UserProfile
 
 def google_login(request):
-    
     base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
     params = {
         'client_id': settings.GOOGLE_CLIENT_ID,
@@ -32,14 +31,25 @@ def google_login(request):
     url = f'{base_url}?{urllib.parse.urlencode(params)}'
     print(url)
     return redirect(url)
+    
+    # base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
+    # params = {
+    #     'client_id': settings.GOOGLE_CLIENT_ID,
+    #     'redirect_uri': settings.GOOGLE_REDIRECT_URI,
+    #     'response_type': 'code',
+    #     'scope': 'openid email profile',
+    #     'access_type': 'offline',
+    #     'prompt': 'consent',
+    # }
+    # url = f'{base_url}?{urllib.parse.urlencode(params)}'
+    # # print(url, "asfdjkldasfkjl")
+    # return redirect(url)
 
 
 def oauth2callback(request):
-    url = (request.GET.get('next', '/'))
-    print(url)
     code = request.GET.get('code')
     if not code:
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('home')
     token_url = 'https://oauth2.googleapis.com/token'
     token_data = {
         'code': code,
@@ -53,7 +63,7 @@ def oauth2callback(request):
     token_json = token_response.json()
     access_token = token_json.get('access_token')
     if not access_token:
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('home')
     user_info_url = 'https://www.googleapis.com/oauth2/v3/userinfo'
     user_info_params = {'access_token': token_json['access_token']}
     user_info_response = requests.get(user_info_url, params=user_info_params)
@@ -63,19 +73,62 @@ def oauth2callback(request):
     email = user_info['email']
     first_name = user_info['given_name']
     last_name = user_info['family_name']
+    print(user_info)
+
+    # Check if the user exists, otherwise create a new user
+    try: 
+        existing_usr = User.objects.get(email = email)
+        login(request, existing_usr)
+        return redirect('home')
+    except User.DoesNotExist:
+        user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
+    
+    # Log the user in
+        login(request, user)
+    
+        return redirect('home')
+    # url = (request.GET.get('next', '/'))
+    # code = request.GET.get('code')
+    # # print(url, "Abul hadsjlkadsfkjl",)
+    # if not code:
+    #     return redirect('https://inspialearn.onrender.com'+url)
+    # token_url = 'https://oauth2.googleapis.com/token'
+    # token_data = {
+    #     'code': code,
+    #     'client_id': settings.GOOGLE_CLIENT_ID,
+    #     'client_secret': settings.GOOGLE_CLIENT_SECRET,
+    #     'redirect_uri': settings.GOOGLE_REDIRECT_URI,
+    #     'grant_type': 'authorization_code',
+    # }
+  
+    
+    # token_response = requests.post(token_url, data=token_data)
+    # token_json = token_response.json()
+    # access_token = token_json.get('access_token')
+    # if not access_token:
+    #     return redirect('https://inspialearn.onrender.com'+url)
+    # user_info_url = 'https://www.googleapis.com/oauth2/v3/userinfo'
+    # user_info_params = {'access_token': token_json['access_token']}
+    # user_info_response = requests.get(user_info_url, params=user_info_params)
+    # user_info = user_info_response.json()
+
+    # # You can now use the `user_info` to authenticate the user in your Django app.
+    email = user_info['email']
+    first_name = user_info['given_name']
+    last_name = user_info['family_name']
     # print(user_info)
     # Check if the user exists, otherwise create a new user
     try: 
         existing_usr = User.objects.get(email = email)
         login(request, existing_usr)
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('https://inspialearn.onrender.com'+url)
     except User.DoesNotExist:
         user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
 
     # Log the user in
         login(request, user)
     
-        return redirect('http://127.0.0.1:8000'+url)
+    #     return redirect('https://inspialearn.onrender.com'+url)
  
  
 def showCategoryCourse(request):
@@ -185,7 +238,7 @@ def signUpPageView(request):
             user.save()
             
             login(request, user)
-            return redirect('http://127.0.0.1:8000'+url)
+            return redirect('https://inspialearn.onrender.com'+url)
     name = request.session.get('name')
     email = request.session.get('email')
     context = {
@@ -212,7 +265,7 @@ def loginView(request):
         print(user)
         if user:
             login(request, user)
-            return redirect('http://127.0.0.1:8000'+url)
+            return redirect('https://inspialearn.onrender.com'+url)
         else:
             messages.error(request, 'Login Email or password not valid.')
 
@@ -223,8 +276,7 @@ def loginView(request):
 def logoutView(request):
     url = (request.GET.get('next', '/'))
     logout(request)
-    # return redirect('http://127.0.0.1:8000'+url)
-    return redirect('home')
+    return redirect('https://inspialearn.onrender.com'+url)
 
 # ### details course page
 def detailsCoursePageView(request, uid):
