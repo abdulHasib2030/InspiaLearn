@@ -1,5 +1,5 @@
 from django.urls import path
-from accounts.views import google_login, oauth2callback,signUpPageView,showCategoryCourse, loginView, logoutView, detailsCoursePageView
+from accounts.views import google_login, oauth2callback,signUpPageView,showCategoryCourse, loginView, logoutView, detailsCoursePageView, profileView,profileUpdate
 # from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -10,5 +10,7 @@ urlpatterns = [
 
     path('course/<uid>/', detailsCoursePageView, name='course_details'),
     path('home/catgory/', showCategoryCourse),
+    path('profile/', profileView, name='profile'),
+    path('profile/update', profileUpdate, name='profile-update'),
 
 ]

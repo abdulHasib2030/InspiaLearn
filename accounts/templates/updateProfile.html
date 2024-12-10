@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>{{request.user}} Profile</title>
+{% endblock title %}
+
+{% block header %}
+<div class="md:container mx-auto w-[92%] py-4">
+    {% include "includes/nav.html" %}
+</div>
+{% endblock header %}
+
+{% block main%}
+{% if messages %}
+{% for message in messages %}
+<div class="p-3 space-y-4 w-full mx-auto max-w-md" id="msg-close">
+    <div class="flex w-96 shadow-lg rounded-lg">
+        <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+            
+            {% if message.tags == 'success' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                </path>
+            </svg>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                </path>
+            </svg>
+            {% endif %}
+        </div>
+        <div
+            class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+            <div>{{message}}</div>
+            <button onclick="msgCloseBtn()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                    width="20" height="20">
+                    <path fill-rule="evenodd"
+                        d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+{% endif %}
+
+
+<!-- component -->
+<div class="relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gray-500 bg-no-repeat bg-cover relative items-center"
+    style="background-image: url(https://images.unsplash.com/photo-1621243804936-775306a8f2e3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80);">
+    <div class="absolute bg-black opacity-60 inset-0 z-0"></div>
+    <div class="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
+        <div class="text-center">
+            <h2 class="mt-5 uppercase text-3xl font-bold text-gray-900">
+                Profile
+            </h2>
+            <!-- <p class="mt-2 text-sm text-gray-400">Lorem ipsum is placeholder text.</p> -->
+        </div>
+        <form class="mt-8 space-y-3" action="#" method="POST" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-gray-500 tracking-wide">Name</label>
+                <input name="name"
+                    class="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    type="text" value="{{request.user.first_name}}">
+            </div>
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-gray-500 tracking-wide">Email</label>
+                <input name="email"
+                    class="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    type="text" value="{{request.user.email}}">
+            </div>
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-gray-500 tracking-wide">Upload Profile Image</label>
+                <div class="flex items-center justify-center w-full ">
+                    <label
+                        class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center hover:border-blue-500 hover:bg-gray-50">
+                        <div class="h-full w-full text-center flex flex-col items-center justify-center   ">
+
+                            <div class="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
+                                <img class="has-mask h-36 object-center"
+                                    src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg"
+                                    alt="freepik image">
+                            </div>
+                            <p class="pointer-none text-gray-500 "><span class="text-sm">Image upload</p>
+                        </div>
+                        <input type="file" class="hidden" name="image">
+                    </label>
+                </div>
+            </div>
+           
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-gray-500 tracking-wide">Facebook Profile Add</label>
+                <input name="facebook"
+                    class="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    type="text" value="{{user_profile.facebook}}" placeholder="https://facebook.com/username">
+            </div>
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-gray-500 tracking-wide">LinkedIn Profile Add</label>
+                <input name="linkedin"
+                    class="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    type="text" value="{{user_profile.linkdin}}" placeholder="https://facebook.com/username">
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="my-5 w-full flex justify-center bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-gray-100 p-4 tracking-wide
+                                    font-semibold  focus:outline-none focus:shadow-outline  shadow-lg cursor-pointer transition ease-in duration-300">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 
+<style>
+	.has-mask {
+		position: absolute;
+		clip: rect(10px, 150px, 130px, 10px);
+	}
+</style> -->
+
+{% endblock main%}
+
+{% block js%}
+
+{% endblock js%}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

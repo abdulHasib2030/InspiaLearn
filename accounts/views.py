@@ -16,7 +16,7 @@ from category.models import Category
 import json
 from django.http import JsonResponse
 import re
-
+from accounts.models import UserProfile
 
 def google_login(request):
     
@@ -274,3 +274,67 @@ def detailsCoursePageView(request, uid):
         'cartlen': cartLen,
     }
     return render(request, 'details_course_page.html', context)
+
+
+def profileView(request):
+    if(request.user.is_authenticated):
+        try:
+            user_profile = UserProfile.objects.get(user = request.user)
+        except UserProfile.DoesNotExist:
+            user_profile = None
+        return render(request, 'profile.html', {'user_profile': user_profile})
+    return redirect('home')
+
+def profileUpdate(request):
+    try:
+        user = User.objects.get(username = request.user.email)
+        user_profile = UserProfile.objects.get(user= user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        image = request.FILES.get('image', '')
+        facebook = request.POST.get('facebook', '')
+        linkedin = request.POST.get('linkedin', '')
+        # print(facebook)
+        if not name:
+            messages.error(request, "Can't empty name field.")
+            return redirect('profile-update')
+        if not email:
+            messages.error(request, "Can't empty email field.")
+            return redirect('profile-update')
+        
+        
+        
+        filter_user = User.objects.exclude(email = user.email )
+        for i in filter_user:
+            print(i.email)
+            if email == i.email:
+                messages.error(request, "This email already exit.")
+                return redirect('profile-update')
+        user.email = email
+        user.username = email
+        user.first_name = name
+        user.save()
+        if user_profile == None and image:
+            UserProfile.objects.create(user = user,  profile_img = image, facebook = facebook, linkdin = linkedin)
+            messages.success(request, "Updated successfully.")
+            return redirect("profile")
+        
+        
+        user_profile.profile_img = image
+        user_profile.facebook = facebook
+        user_profile.linkdin = linkedin
+        user_profile.save()
+        messages.success(request, "Updated successfully.")
+        return redirect("profile")
+        
+        
+    
+        
+    return render(request, 'updateProfile.html', {'user_profile': user_profile})
+
+    
+
