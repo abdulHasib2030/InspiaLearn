@@ -31,29 +31,14 @@ def google_login(request):
     url = f'{base_url}?{urllib.parse.urlencode(params)}'
     print(url)
     return redirect(url)
-    
-    # base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
-    # params = {
-    #     'client_id': settings.GOOGLE_CLIENT_ID,
-    #     'redirect_uri': settings.GOOGLE_REDIRECT_URI,
-    #     'response_type': 'code',
-    #     'scope': 'openid email profile',
-    #     'access_type': 'offline',
-    #     'prompt': 'consent',
-    # }
-    # url = f'{base_url}?{urllib.parse.urlencode(params)}'
-    # # print(url, "asfdjkldasfkjl")
-    # return redirect(url)
 
 
 def oauth2callback(request):
+    url = (request.GET.get('next', '/'))
     code = request.GET.get('code')
+    
     if not code:
-<<<<<<< HEAD
-        return redirect('home')
-=======
         return redirect('https://inspialearn.onrender.com'+url)
->>>>>>> 46b76030c669c5d45daa57ea8b66117ceb394732
     token_url = 'https://oauth2.googleapis.com/token'
     token_data = {
         'code': code,
@@ -62,65 +47,22 @@ def oauth2callback(request):
         'redirect_uri': settings.GOOGLE_REDIRECT_URI,
         'grant_type': 'authorization_code',
     }
+  
     
     token_response = requests.post(token_url, data=token_data)
     token_json = token_response.json()
     access_token = token_json.get('access_token')
     if not access_token:
-        return redirect('home')
+        return redirect('https://inspialearn.onrender.com'+url)
     user_info_url = 'https://www.googleapis.com/oauth2/v3/userinfo'
     user_info_params = {'access_token': token_json['access_token']}
     user_info_response = requests.get(user_info_url, params=user_info_params)
     user_info = user_info_response.json()
 
-    # You can now use the `user_info` to authenticate the user in your Django app.
     email = user_info['email']
     first_name = user_info['given_name']
     last_name = user_info['family_name']
-    print(user_info)
 
-    # Check if the user exists, otherwise create a new user
-    try: 
-        existing_usr = User.objects.get(email = email)
-        login(request, existing_usr)
-        return redirect('home')
-    except User.DoesNotExist:
-        user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
-    
-    # Log the user in
-        login(request, user)
-    
-        return redirect('home')
-    # url = (request.GET.get('next', '/'))
-    # code = request.GET.get('code')
-    # # print(url, "Abul hadsjlkadsfkjl",)
-    # if not code:
-    #     return redirect('https://inspialearn.onrender.com'+url)
-    # token_url = 'https://oauth2.googleapis.com/token'
-    # token_data = {
-    #     'code': code,
-    #     'client_id': settings.GOOGLE_CLIENT_ID,
-    #     'client_secret': settings.GOOGLE_CLIENT_SECRET,
-    #     'redirect_uri': settings.GOOGLE_REDIRECT_URI,
-    #     'grant_type': 'authorization_code',
-    # }
-  
-    
-    # token_response = requests.post(token_url, data=token_data)
-    # token_json = token_response.json()
-    # access_token = token_json.get('access_token')
-    # if not access_token:
-    #     return redirect('https://inspialearn.onrender.com'+url)
-    # user_info_url = 'https://www.googleapis.com/oauth2/v3/userinfo'
-    # user_info_params = {'access_token': token_json['access_token']}
-    # user_info_response = requests.get(user_info_url, params=user_info_params)
-    # user_info = user_info_response.json()
-
-    # # You can now use the `user_info` to authenticate the user in your Django app.
-    email = user_info['email']
-    first_name = user_info['given_name']
-    last_name = user_info['family_name']
-    # print(user_info)
     # Check if the user exists, otherwise create a new user
     try: 
         existing_usr = User.objects.get(email = email)
@@ -128,15 +70,9 @@ def oauth2callback(request):
         return redirect('https://inspialearn.onrender.com'+url)
     except User.DoesNotExist:
         user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
-
-    # Log the user in
         login(request, user)
     
-<<<<<<< HEAD
-    #     return redirect('https://inspialearn.onrender.com'+url)
-=======
         return redirect('https://inspialearn.onrender.com'+url)
->>>>>>> 46b76030c669c5d45daa57ea8b66117ceb394732
  
  
 def showCategoryCourse(request):
