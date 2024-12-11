@@ -70,6 +70,7 @@ def oauth2callback(request):
         return redirect('https://inspialearn.onrender.com'+url)
     except User.DoesNotExist:
         user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
+        UserProfile.objects.create(user=user)
         login(request, user)
     
         return redirect('https://inspialearn.onrender.com'+url)
@@ -115,42 +116,43 @@ def showCategoryCourse(request):
 
 
 def homeView(request):
-    isInstructorActive = False
-    purCourse = purchaseCourseModel.objects.filter(user=request.user.id)
+    
+    # purCourse = purchaseCourseModel.objects.filter(user=request.user.id)
+    # purCourse = purchaseCourseModel.objects.all()
     pubCourse = publishCourse.objects.all()
     category = Category.objects.all()
-    lst = []
-    for i in purCourse:
-        for j in i.course.all():
-            lst.append(j.id)
-    temp = []
-    for i in pubCourse:
-        if i.id not in lst:
-            print(i.id, lst)
-            temp.append(i)
+    # lst = []
+    # for i in purCourse:
+    #     for j in i.course.all():
+    #         lst.append(j.id)
+    # temp = []
+    # for i in pubCourse:
+    #     if i.id not in lst:
+    #         print(i.id, lst)
+    #         temp.append(i)
   
     cartLen = 0
     if request.user:
         cartItem = addCartModel.objects.filter(user = request.user.id)
         cartLen += len(cartItem)
-        try:
-            instructor = instructorRegister.objects.get(user = request.user.id)
-            isInstructorActive = instructor.terms_conditions
-        except instructorRegister.DoesNotExist:
-            isInstructorActive = False
 
-
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
     context ={
-        'isInstructorActive': isInstructorActive,
         'cartlen': cartLen,
-        'pubCourse': temp,
+        'pubCourse': pubCourse,
         'category':category,
+        'user_profile':user_profile
     }
     
     return render(request, 'home.html', context)
 
 
 def signUpPageView(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     url = (request.GET.get('next', '/'))
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -180,6 +182,8 @@ def signUpPageView(request):
             user, created = User.objects.get_or_create(username = email, first_name = name, email=email)
             user.set_password(password)
             user.save()
+            UserProfile.objects.create(user=user)
+
             
             login(request, user)
             return redirect('https://inspialearn.onrender.com'+url)
@@ -194,6 +198,8 @@ def signUpPageView(request):
 #  Login View
 def loginView(request):
     url = (request.GET.get('next', '/'))
+    if request.user.is_authenticated:
+        return redirect('home')
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -262,13 +268,24 @@ def detailsCoursePageView(request, uid):
                 addWishlistedModel.objects.create( publish_course = course, user = request.user )
                 messages.success(request, 'Successfully added to wishlist')
                 return redirect('course_details', uid)
-        
+    cart_disable = False
+    try:
+        purchase_course_usr = purchaseCourseModel.objects.get(course = course)
+        cart_disable = True
+    except purchaseCourseModel.DoesNotExist:
+        cart_disable = False
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
     context = {
         'course':course,
         "lerner": lerner,
         'module': module,
         'uid': course.course.uid,
         'cartlen': cartLen,
+        'cart_disable':cart_disable,
+        'user_profile':user_profile,
     }
     return render(request, 'details_course_page.html', context)
 

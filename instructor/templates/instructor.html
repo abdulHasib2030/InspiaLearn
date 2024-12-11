@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-
+<title>Course create - InspiaLearn</title>
 {% endblock title %}
 {% block main %}
 <!-- success.html -->
@@ -33,12 +33,14 @@
     
                 <a class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
                     href="#">
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    <!-- <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z">
                         </path>
-                    </svg>
+                    </svg> -->
+
+                    <img class="text-white w-8"  src="{% static 'assets/logo/buyCourse.png' %}" alt="">
     
                     <span class="mx-3">Course Buyers</span>
                 </a>
@@ -70,7 +72,7 @@
                             </svg>
                         </button>
     
-                        <div x-show="notificationOpen" @click="notificationOpen = false"
+                        <!-- <div x-show="notificationOpen" @click="notificationOpen = false"
                             class="fixed inset-0 z-10 w-full h-full" style="display: none;"></div>
     
                         <div x-show="notificationOpen"
@@ -114,29 +116,39 @@
                                     <span class="font-bold" href="#">Abigail Bennett</span> start following you . 3h
                                 </p>
                             </a>
-                        </div>
+                        </div> -->
                     </div>
     
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click="dropdownOpen = ! dropdownOpen"
                             class="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
+                            {% if user_profile.profile_img %}
                             <img class="object-cover w-full h-full"
-                                src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=296&amp;q=80"
+                                src="{{user_profile.profile_img.url}}"
                                 alt="Your avatar">
+                                {% else %}
+                                <i class="fa-regular fa-user"></i>
+                                {% endif %}
                         </button>
     
                         <div x-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 z-10 w-full h-full"
                             style="display: none;"></div>
     
-                        <div x-show="dropdownOpen"
-                            class="absolute right-0 z-10 w-48 mt-2 overflow-hidden bg-white rounded-md shadow-xl"
+                            <div x-show="dropdownOpen"
+                            class="absolute right-0 z-10 w-48 mt-2 font-semibold overflow-hidden bg-white rounded-md shadow-xl"
                             style="display: none;">
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
-                            <a href="{% url 'logout' %}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Logout</a>
+                            <a href="{% url 'profile' %}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Profile</a>
+                            {% if user_profile.instructor %}
+                            <a href="{% url 'instructor' %}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Instructor
+                                account</a>
+                            {% endif %}
+                            <a href="{% url 'learning-page' %}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">My
+                                learning</a>
+                            <a href="{% url 'logout'%}?next={{ request.path }} "
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1970EC] hover:text-white">Logout</a>
                         </div>
                     </div>
                 </div>

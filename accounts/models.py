@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_img = models.FileField(upload_to='porfile/')
+    profile_img = models.FileField(upload_to='porfile/', null=True)
     facebook = models.CharField(max_length= 200, null=True)
     linkdin = models.CharField(max_length= 200, null=True)
+    instructor = models.BooleanField(default= False, null= True)
 
 

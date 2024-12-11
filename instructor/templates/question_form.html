@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+<title>Instructor register - InspiaLearn</title>
+{% endblock title %}
+
 {% block style %}
 <style>
     .step {
@@ -54,7 +58,7 @@
 
             <div class="space-y-5 step {% if step == 1 %}active{% endif %}">
                 <h4 class="font-bold text-2xl">Welcome {{request.user.username}}</h4>
-                <h1 class="font-semibold text-3xl w-4/5 mx-auto">Thanks for your interest in teaching on THJ Academy
+                <h1 class="font-semibold text-3xl w-4/5 mx-auto">Thanks for your interest in teaching on InspiaLearn 
                 </h1>
                 <p class="text-[#E6326F] font-bold text-3xl">What kind of teaching have you done before?</p>
                 <div class="border border-black p-3 text-xl font-semibold">

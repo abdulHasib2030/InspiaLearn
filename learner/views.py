@@ -4,6 +4,7 @@ from learner.models import addCartModel, addWishlistedModel, purchaseCourseModel
 from django.contrib.auth.models import User
 # Create your views here.
 from django.contrib import messages
+from accounts.models import UserProfile
 
 # def addCartView(request, id):
 
@@ -71,7 +72,10 @@ def cartDataView(request):
             cartItem.delete()
 
             return redirect('learning-page')
-        
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
     wishListItem = zip(wishListItem, lectureWishlist)
     cartItem = zip(cartItem, lectureTotal)
     context = {
@@ -82,6 +86,7 @@ def cartDataView(request):
         'discount': discount,
         'percent':percent,
         'wishListItem':wishListItem,
+        'user_profile':user_profile,
     }
     
     return render(request, 'cart.html', context)
@@ -110,8 +115,13 @@ def addRemoveCartWishView(request, id):
 
 def learningPageView(request):
     purchaseCourse = purchaseCourseModel.objects.filter(user = request.user.id)
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
     context = {
         'purchaseCourse':purchaseCourse,
+        'user_profile':user_profile,
     }
     return render(request, 'learningPage.html', context)
 
@@ -135,7 +145,10 @@ def courseWathingView(request, slug, slug_ = None):
         title += video.title
     video = Video.objects.get(slug = t)
     
-    
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
     
     context = {
         'publishcourse': publishcourse,
@@ -143,6 +156,7 @@ def courseWathingView(request, slug, slug_ = None):
         'title': title,
         'module': module,
         'first':first,
+        'user_profile':user_profile,
         
     }
     return render(request, 'watchingCourse.html', context)

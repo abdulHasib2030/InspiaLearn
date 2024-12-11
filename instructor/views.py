@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.encoding import smart_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from PIL import Image
+from accounts.models import UserProfile
 
 
 def instructor_view(request):
@@ -17,8 +18,14 @@ def instructor_view(request):
     if(request.user.is_authenticated) :
         try:
             user = instructorRegister.objects.get(user = request.user)
+
+            try:
+                user_profile = UserProfile.objects.get(user = request.user)
+            except UserProfile.DoesNotExist:
+                user_profile = None
+
             allCourse = courseCreateFirstStep.objects.filter(instructor__user = request.user)
-            return render(request, 'main/course.html', {'allCourse': allCourse})
+            return render(request, 'main/course.html', {'allCourse': allCourse, 'user_profile':user_profile})
         except instructorRegister.DoesNotExist:
             return redirect('home')
     else:
@@ -68,7 +75,14 @@ def instructorRegisterView(request):
                     experience = experience.lower()
 
                     instructorRegister.objects.create(user= user, teaching_before=teaching_before, experience = experience, terms_conditions= terms)
-                    return redirect('instructor')  # Redirect to success page after final submission
+                    try:
+                        user_profile = UserProfile.objects.get(user = user)
+                        user_profile.instructor = True
+                        user_profile.save()
+                    except UserProfile.DoesNotExist:
+                        messages.error(request, "Return again something error.")
+                        return redirect("home")
+                    return redirect('instructor') 
 
         # Retrieve saved data from the session for each step
     except User.DoesNotExist:
@@ -158,13 +172,17 @@ def courseCreate(request):
 
 def descriveCourseCreateView(request, uid):
     print("Hi Abdul ", uid)
-    return render(request, 'main/descrive_course.html', {'uid': uid})
+    course = courseCreateFirstStep.objects.get(uid = uid)
+    return render(request, 'main/descrive_course.html', {'uid': uid, 'course':course})
 
 def courseCurriculum(request, uid):
     if request.user.is_authenticated:
         try:
             user = instructorRegister.objects.get(user = request.user)
-            if smart_str(urlsafe_base64_decode(uid)) == str(user.id):
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = user))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid = uid)
                 module, video = None, []
 
@@ -236,7 +254,7 @@ def courseCurriculum(request, uid):
     else:
         return redirect('home')
     
-    return render(request, 'main/create_course_data/curriculum.html', {"uid": uid, 'module':module, 'video':video})
+    return render(request, 'main/create_course_data/curriculum.html', {"uid": uid, 'module':module, 'video':video, 'course':course})
 
 def lectureDelete(request, uid, lectureId ):
     if request.user.is_authenticated:
@@ -251,9 +269,11 @@ def lectureDelete(request, uid, lectureId ):
 def courseIntendedLernerView(request, uid, pk = None):
     if request.user.is_authenticated:
         try:
-            user = instructorRegister.objects.get(user = request.user)
-            print(user.id, )
-            if smart_str(urlsafe_base64_decode(uid)) == str(user.id):
+            user = instructorRegister.objects.get(user = request.user.id)
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = user))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid = uid)
                 item = None
                 
@@ -288,13 +308,16 @@ def courseIntendedLernerView(request, uid, pk = None):
             return redirect('home')    
     else:
         return redirect('home') 
-    return render(request, 'main/create_course_data/intended_lerner.html', {"uid": uid, 'item':item})
+    return render(request, 'main/create_course_data/intended_lerner.html', {"uid": uid, 'item':item, 'course': course})
 
 def courseLandingPageView(request, uid):
     if request.user.is_authenticated:
         try:
             user = instructorRegister.objects.get(user = request.user)
-            if smart_str(urlsafe_base64_decode(uid)) == str(user.id):
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = user))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid = uid)
                 print(course.category.category_name)
             
@@ -360,7 +383,10 @@ def coursePricingView(request, uid):
     if request.user.is_authenticated:
         try:
             instructor = instructorRegister.objects.get(user = request.user)
-            if smart_str(urlsafe_base64_decode(uid)) == str(instructor.id):
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = instructor))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid = uid)
                 try: 
                     item = Pricing.objects.get(course= course)
@@ -393,13 +419,16 @@ def coursePricingView(request, uid):
             return redirect('home')
     else:
         return redirect('home') 
-    return render(request, 'main/create_course_data/pricing.html', {"uid": uid, 'item':item})
+    return render(request, 'main/create_course_data/pricing.html', {"uid": uid, 'item':item, 'course':course})
 
 def courseMessagesView(request, uid):
     if request.user.is_authenticated:
         try:
             instructor = instructorRegister.objects.get(user = request.user)
-            if smart_str(urlsafe_base64_decode(uid)) == str(instructor.id):
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = instructor))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid = uid)
                 try: 
                     item = welcomeCongratMessages.objects.get(course= course)
@@ -422,7 +451,7 @@ def courseMessagesView(request, uid):
             return redirect('home')       
     else:
         return redirect('home')
-    return render(request, 'main/create_course_data/messages.html', {"uid": uid, 'item': item})
+    return render(request, 'main/create_course_data/messages.html', {"uid": uid, 'item': item, 'course':course})
 
 
 #  ### Preview course
@@ -430,7 +459,10 @@ def previewCourseView(request, uid, slug=None):
     if request.user.is_authenticated:
         try:
             instructor = instructorRegister.objects.get(user=request.user)
-            if smart_str(urlsafe_base64_decode(uid)) == str(instructor.id):
+            allCourse = (courseCreateFirstStep.objects.filter(instructor = instructor))
+            lst = [i.id for i in allCourse]
+            
+            if int(smart_str(urlsafe_base64_decode(uid))) in lst:
                 course = courseCreateFirstStep.objects.get(uid=uid)
                 lerner = []
                 try:
@@ -543,6 +575,7 @@ def previewCourseView(request, uid, slug=None):
                     "requirement": indentend_lerner.course_requirement,
                     "who_this_course": indentend_lerner.who_this_course if indentend_lerner else '',
                     "video_length": video_length,
+                    'course': course,
                 }
                 return render(request, 'main/create_course_data/previewCourse.html', context)
             else:
