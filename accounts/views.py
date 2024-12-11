@@ -49,7 +49,11 @@ def google_login(request):
 def oauth2callback(request):
     code = request.GET.get('code')
     if not code:
+<<<<<<< HEAD
         return redirect('home')
+=======
+        return redirect('https://inspialearn.onrender.com'+url)
+>>>>>>> 46b76030c669c5d45daa57ea8b66117ceb394732
     token_url = 'https://oauth2.googleapis.com/token'
     token_data = {
         'code': code,
@@ -128,7 +132,11 @@ def oauth2callback(request):
     # Log the user in
         login(request, user)
     
+<<<<<<< HEAD
     #     return redirect('https://inspialearn.onrender.com'+url)
+=======
+        return redirect('https://inspialearn.onrender.com'+url)
+>>>>>>> 46b76030c669c5d45daa57ea8b66117ceb394732
  
  
 def showCategoryCourse(request):

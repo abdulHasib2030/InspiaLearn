@@ -154,6 +154,7 @@ if not DEBUG:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+<<<<<<< HEAD
 import environ
 import os
 env = environ.Env(
@@ -165,3 +166,20 @@ GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID_")
 GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET_")
 GOOGLE_REDIRECT_URI = env("GOOGLE_REDIRECT_URI_")
 
+=======
+# import environ
+# import os
+# env = environ.Env(
+#     DEBUG=(bool, False)
+# )
+# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# DEBUG = env('DEBUG')
+# GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID_")
+# GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET_")
+# # GOOGLE_REDIRECT_URI = env("GOOGLE_REDIRECT_URI_")
+
+# GOOGLE_REDIRECT_URI= 'https://inspialearn.onrender.com/oauth2callback/'
+GOOGLE_CLIENT_ID = '320501578879-eefjqaoj6idbdhdbramtis16hp63t1v0.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+GOOGLE_REDIRECT_URI = 'https://inspialearn.onrender.com/oauth2callback/'
+>>>>>>> 46b76030c669c5d45daa57ea8b66117ceb394732
