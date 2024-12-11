@@ -39,7 +39,7 @@ def oauth2callback(request):
     print(url)
     code = request.GET.get('code')
     if not code:
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('https://inspialearn.onrender.com'+url)
     token_url = 'https://oauth2.googleapis.com/token'
     token_data = {
         'code': code,
@@ -68,14 +68,14 @@ def oauth2callback(request):
     try: 
         existing_usr = User.objects.get(email = email)
         login(request, existing_usr)
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('https://inspialearn.onrender.com'+url)
     except User.DoesNotExist:
         user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name, 'last_name': last_name, 'email': email})
 
     # Log the user in
         login(request, user)
     
-        return redirect('http://127.0.0.1:8000'+url)
+        return redirect('https://inspialearn.onrender.com'+url)
  
  
 def showCategoryCourse(request):
@@ -212,7 +212,7 @@ def loginView(request):
         print(user)
         if user:
             login(request, user)
-            return redirect('http://127.0.0.1:8000'+url)
+            return redirect('https://inspialearn.onrender.com'+url)
         else:
             messages.error(request, 'Login Email or password not valid.')
 
