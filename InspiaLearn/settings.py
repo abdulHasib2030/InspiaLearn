@@ -138,9 +138,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
-STATICFILES_DIRS =  [
-    BASE_DIR/'static',
-]
+# STATICFILES_DIRS =  [
+#     BASE_DIR/'static',
+# ]
 
 if not DEBUG:
     # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)

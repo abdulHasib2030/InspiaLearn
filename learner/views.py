@@ -78,21 +78,25 @@ def cartDataView(request):
         user_profile = None
     wishListItem = zip(wishListItem, lectureWishlist)
     cartItem = zip(cartItem, lectureTotal)
+
+   
     context = {
         'cartlen': cartLen,
-        'wishLen': wishLen,
+        'wishlen': wishLen,
         'cartItem': cartItem,
         'total':total,
         'discount': discount,
         'percent':percent,
         'wishListItem':wishListItem,
         'user_profile':user_profile,
+
     }
     
     return render(request, 'cart.html', context)
 
 
 def deleteCartItem(request, id):
+
     cartItem = addCartModel.objects.get(id = id)
     cartItem.delete()
     messages.success(request, "Successfully Deleted Cart Item")
@@ -100,14 +104,19 @@ def deleteCartItem(request, id):
 
 def deleteWishItem(request, id):
     wishItem = addWishlistedModel.objects.get(id = id)
-    next = request.GET.get('next', '/')
-    if next:
+    next = request.GET.get('step', '/')
+    if next == 'cart':
         wishItem.delete()
+        messages.success(request, "Successfully Deleted Wishlist Item")
+        return redirect('cart')
+    else:
+        wishItem.delete()
+        messages.success(request, "Successfully Deleted Wishlist Item")
         return redirect('wishlist')
-    messages.success(request, "Successfully Deleted Wishlist Item")
-    return redirect('cart')
+    
 
 def addRemoveCartWishView(request, id):
+
     if request.method == 'POST':
         data = request.POST.get('data')
         print(data)
@@ -115,6 +124,14 @@ def addRemoveCartWishView(request, id):
 
 def learningPageView(request):
     purchaseCourse = purchaseCourseModel.objects.filter(user = request.user.id)
+    cartLen = 0
+ 
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
+
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
     try:
         user_profile = UserProfile.objects.get(user = request.user.id)
     except UserProfile.DoesNotExist:
@@ -122,6 +139,8 @@ def learningPageView(request):
     context = {
         'purchaseCourse':purchaseCourse,
         'user_profile':user_profile,
+         'cartlen': cartLen,
+         'wishlen':wishLen,
     }
     return render(request, 'learningPage.html', context)
 
@@ -149,7 +168,13 @@ def courseWathingView(request, slug, slug_ = None):
         user_profile = UserProfile.objects.get(user = request.user.id)
     except UserProfile.DoesNotExist:
         user_profile = None
-    
+    cartLen = 0
+ 
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
     context = {
         'publishcourse': publishcourse,
         'video': video,
@@ -157,15 +182,23 @@ def courseWathingView(request, slug, slug_ = None):
         'module': module,
         'first':first,
         'user_profile':user_profile,
+         'cartlen': cartLen,
+         'wishlen': wishLen,
         
     }
     return render(request, 'watchingCourse.html', context)
 
 def wishListView(request):
     wishlistItem = addWishlistedModel.objects.filter(user = request.user.id)
-    
+    cartLen = 0
+    wishLen = 0
+    wishLen+= len(wishlistItem)
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
     context = {
         'wishlistItem':wishlistItem,
+        'cartlen': cartLen,
+        'wishlen':wishLen,
     }
 
     return render(request, 'learningPage.html', context)

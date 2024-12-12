@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title%}
+<title>All Courses - InspiaLearn</title>
+{% endblock title%}
 {% block header %}
 
 <header class="lg:container w-[95%] mx-auto  py-4">
+    {% include "includes/nav.html" %}
     {% if messages %}
 {% for message in messages %}
 <div class="p-3 space-y-4 w-full mx-auto max-w-md" id="msg-close">
@@ -42,7 +47,7 @@
 </div>
 {% endfor %}
 {% endif %}
-    {% include "includes/nav.html" %}
+  
 
 
 </header>

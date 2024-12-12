@@ -84,6 +84,7 @@ def showCategoryCourse(request):
             data = json.loads(request.body)
             categoryFind = Category.objects.get(category_name = data.get('category'))
             categoryCourseShow = publishCourse.objects.filter(course__category = categoryFind)
+            print(len(categoryCourseShow))
             datasend = []
             for i in categoryCourseShow:
                 datasend.append({
@@ -95,6 +96,7 @@ def showCategoryCourse(request):
                     "instructor": i.course.instructor.user.first_name,
                     "uid": i.course.uid,
                 })
+            print(datasend)
             return JsonResponse(datasend, safe=False)
 
         except json.JSONDecodeError:
@@ -132,9 +134,12 @@ def homeView(request):
     #         temp.append(i)
   
     cartLen = 0
-    if request.user:
-        cartItem = addCartModel.objects.filter(user = request.user.id)
-        cartLen += len(cartItem)
+ 
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
 
     try:
         user_profile = UserProfile.objects.get(user = request.user.id)
@@ -144,7 +149,8 @@ def homeView(request):
         'cartlen': cartLen,
         'pubCourse': pubCourse,
         'category':category,
-        'user_profile':user_profile
+        'user_profile':user_profile,
+        'wishlen':wishLen,
     }
     
     return render(request, 'home.html', context)
@@ -270,7 +276,8 @@ def detailsCoursePageView(request, uid):
                 return redirect('course_details', uid)
     cart_disable = False
     try:
-        purchase_course_usr = purchaseCourseModel.objects.get(course = course)
+        purchase_course_usr = purchaseCourseModel.objects.get(course = course, user = request.user.id)
+        print(purchase_course_usr)
         cart_disable = True
     except purchaseCourseModel.DoesNotExist:
         cart_disable = False
@@ -278,6 +285,10 @@ def detailsCoursePageView(request, uid):
         user_profile = UserProfile.objects.get(user = request.user.id)
     except UserProfile.DoesNotExist:
         user_profile = None
+
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
     context = {
         'course':course,
         "lerner": lerner,
@@ -286,17 +297,24 @@ def detailsCoursePageView(request, uid):
         'cartlen': cartLen,
         'cart_disable':cart_disable,
         'user_profile':user_profile,
+        'wishlen':wishLen,
     }
     return render(request, 'details_course_page.html', context)
 
 
 def profileView(request):
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
+    cartLen = 0
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
     if(request.user.is_authenticated):
         try:
             user_profile = UserProfile.objects.get(user = request.user)
         except UserProfile.DoesNotExist:
             user_profile = None
-        return render(request, 'profile.html', {'user_profile': user_profile})
+        return render(request, 'profile.html', {'user_profile': user_profile, 'wishlen':wishLen, 'cartlen': cartLen})
     return redirect('home')
 
 def profileUpdate(request):
@@ -346,9 +364,14 @@ def profileUpdate(request):
         return redirect("profile")
         
         
-    
+    wishLen = 0
+    wishItem = addWishlistedModel.objects.filter(user = request.user.id)
+    wishLen += len(wishItem)
+    cartLen = 0
+    cartItem = addCartModel.objects.filter(user = request.user.id)
+    cartLen += len(cartItem)
         
-    return render(request, 'updateProfile.html', {'user_profile': user_profile})
+    return render(request, 'updateProfile.html', {'user_profile': user_profile, 'wishlen': wishLen, 'cartlen': cartLen})
 
     
 

@@ -74,9 +74,9 @@ def instructorRegisterView(request):
                     
                     experience = experience.lower()
 
-                    instructorRegister.objects.create(user= user, teaching_before=teaching_before, experience = experience, terms_conditions= terms)
                     try:
-                        user_profile = UserProfile.objects.get(user = user)
+                        instructorRegister.objects.create(user= user, teaching_before=teaching_before, experience = experience, terms_conditions= terms)
+                        user_profile = UserProfile.objects.get(user = user.id)
                         user_profile.instructor = True
                         user_profile.save()
                     except UserProfile.DoesNotExist:
