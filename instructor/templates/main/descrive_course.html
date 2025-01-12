@@ -1,0 +1,141 @@
+{% extends 'instructor.html' %}
+
+{% block title %}
+<title>{{course.title}}</title>
+{% endblock title %}
+
+{% block instructor %}
+<div>
+    <nav>
+        <div class="hidden md:block">
+            <ul id="nav-list" class="flex justify-center mt-5 shadow-xl gap-4 text-xl font-semibold border-b  border-black">
+                <a href="{% url 'intended_lerner' uid=uid %}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Intended Learners</a>
+            <a href="{% url 'curriculum' uid=uid %}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Curriculum</a>
+            <a href="{% url 'landing_page' uid=uid %}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Course langing page</a>
+            <a href="{% url 'pricing' uid=uid %}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Pricing</a>
+            <a href="{% url 'messages' uid=uid %}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Course messages</a>
+            <a  href="{% url 'preview_course' uid=uid%}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Preview course</a>
+               
+            </ul>
+        </div>
+
+
+<div class="flex justify-end mr-3 md:hidden mt-4">
+    <div x-data="{ dropdownOpen: false }" class="relative ">
+        <button @click="dropdownOpen = ! dropdownOpen"
+            class="relative block w-8 h-8 p-2 overflow-hidden shadow focus:outline-none">
+            <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    transform="scale(-1, 1)">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 6h16M4 12h16M4 18h7" />
+</svg>
+        </button>
+
+        <div x-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 z-10 w-full h-full"
+            style="display: none;"></div>
+
+        <div x-show="dropdownOpen"
+            class="absolute right-3 z-10 w-48 mt-2 overflow-hidden bg-white rounded-md shadow-xl"
+            style="display: none;">
+            <a href="{% url 'intended_lerner' uid=uid %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E77ED] hover:text-white">Intended Learners</a>
+            <a href="{% url 'curriculum' uid=uid %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E77ED] hover:text-white">Curriculum</a>
+            <a href="{% url 'landing_page' uid=uid %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E77ED] hover:text-white">Course langing page</a>
+            <a href="{% url 'pricing' uid=uid %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E77ED] hover:text-white">Pricing</a>
+            <a href="{% url 'messages' uid=uid %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E77ED] hover:text-white">Course messages</a>
+        
+             <a  href="{% url 'preview_course' uid=uid%}"
+                class="block px-4 py-2 text-[16px] text-gray-700 hover:bg-[#1E77ED] hover:text-white">Preview course</a>
+               
+            </div>
+    </div>
+</div>
+         
+    </nav>
+
+    <div class="mt-7">
+        {% block course_data %}
+        {% endblock course_data %}
+    </div>
+
+</div>
+{% endblock instructor %}
+
+{% block js %}
+<script>
+
+//  Intended Learners Js code
+
+let addVisble = 0;
+    const titleData = document.querySelectorAll('.title-data')
+    const dataCnt = document.querySelectorAll('.data-cnt')
+    const addMoreLearn = document.getElementById('add-more-learn')
+    const addLearn = document.getElementById('add-learn')
+
+    console.log(addMoreLearn.parentElement)
+    addMoreLearn.addEventListener('click', function (e) {
+           e.preventDefault()
+        titleData.forEach(item => {
+            if (item.value) {
+                addVisble += 1;
+            }
+        })
+        console.log(addVisble)
+        if (addVisble >= 4) {
+
+            const div = document.createElement('div')
+            div.classList = 'relative'
+            const input = document.createElement('input')
+            input.name = 'title';
+            input.type = 'text';
+            input.maxLength = '160';
+            input.classList = 'title-data p-3 border w-full border-black'
+            input.placeholder = 'e.g. Learn Web Development from Scratc'
+            const span = document.createElement('span')
+            span.classList = 'absolute right-3 data-cnt top-2'
+            span.innerText = 160
+            div.appendChild(input)
+            div.appendChild(span)
+            addLearn.appendChild(div)
+        }
+        else {
+            addVisble = 0;
+        }
+    })
+
+    titleData.forEach((item, idx) => {
+        let cnt = 160;
+        let curr = 0;
+        item.addEventListener('input', function (e) {
+            const inputLength = e.target.value.length;
+            if (curr < inputLength) {
+                cnt -= 1;
+                curr = inputLength;
+            }
+            else {
+                cnt += 1
+                curr = inputLength;
+            }
+            dataCnt[idx].innerText = cnt;
+        })
+    })
+</script> 
+{% endblock js %}

@@ -1,0 +1,36 @@
+        <!-- banner section start -->
+{% load static %}
+        <section class="relative w-full flex items-center justify-center mt-16 ">
+            <!-- Carousel Container with Fixed Height -->
+            <div id="bannerCarousel" class="relative   w-[1538px]  overflow-hidden ">
+
+                <!-- Banner Items -->
+                <div class="flex transition-transform duration-500" id="carouselSlides">
+                    <!-- First Image -->
+                    <div class="min-w-full ">
+                        <img src="{% static './assets/banner_carousel/first.jpg' %}" alt="Banner 1" class="w-full ">
+                    </div>
+                    <!-- Second Image -->
+                    <div class="min-w-full">
+                        <img src="{% static './assets/banner_carousel/second.jpg' %}" alt="Banner 2" class="w-full ">
+                    </div>
+                </div>
+
+                <!-- Left Arrow -->
+                <button id="prevButton"
+                    class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full opacity-50 hover:opacity-100">
+                    &#10094;
+                </button>
+
+                <!-- Right Arrow -->
+                <button id="nextButton"
+                    class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full opacity-50 hover:opacity-100">
+                    &#10095;
+                </button>
+
+            </div>
+            <!-- <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player src="https://lottie.host/418bfeeb-f5ac-44e9-9a5c-e9e4416ef8b3/5HUoKcAyZ8.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player> -->
+        </section>
+
+        <!-- banner section end -->

@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>Sign Up - InspiaLearn </title>
+{% endblock title %}
+{% block header %}
+<div class="md:container mx-auto w-[92%] py-4">
+    {% include "includes/nav.html" %}
+</div>
+{% endblock header %}
+
+{% block main%}
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="p-3 mt-16 space-y-4 w-full mx-auto max-w-md" id="msg-close">
+        <div class="flex w-96 shadow-lg rounded-lg">
+            <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                    </path>
+                </svg>
+           
+            </div>
+            <div
+                class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+                <div>{{message}}</div>
+                <button onclick="msgCloseBtn()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                        width="20" height="20">
+                        <path fill-rule="evenodd"
+                            d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div
+    class="max-w-screen-xl mx-auto my-20 bg-white shadow sm:rounded-lg flex justify-center flex-1 border-2 "
+  >
+    <div class="lg:w-1/2 p-6">
+      <div>
+        
+      </div>
+      <div class="mt-12 flex flex-col items-center">
+        <h1 class="text-2xl xl:text-3xl font-extrabold">
+            Create an Account
+        </h1>
+        <div class="w-full flex-1 mt-8">
+          <div class="flex flex-col items-center">
+            <a href="{%url 'google_login' %}?next={{ request.path }}" class="w-full max-w-xs">
+            <button
+              class="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
+            >
+              <div class="bg-white p-2 rounded-full">
+                <img src="https://img.icons8.com/color/20/000000/google-logo.png" alt="Google" class="">
+              </div>
+              <span class="ml-4">
+                Sign Up with Google
+              </span>
+            </button>
+</a>
+          
+          </div>
+
+          <div class="my-12 border-b text-center">
+            <div
+              class="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"
+            >
+              Or sign up with e-mail
+            </div>
+          </div>
+
+          <div class="mx-auto max-w-xs">
+            <form class="space-y-4"  method="post">
+                {% csrf_token %}
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-600">Full Name</label>
+                    <input type="text" name="name" id="name" placeholder="Mohammad Abdul" value="{% if name %} {{name}} {% endif %}"
+                        class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#1970EC]">
+                </div>
+        
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                    <input type="email" name="email" id="email" placeholder="example@gmail.com" value="{% if email %} {{email}} {% endif %}"
+                        class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#1970EC]">
+                </div>
+        
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="password"
+                            class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#1970EC]">
+                        <button type="button" onclick="togglePassword('password', 'eyeIcon1')"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                            <i id="eyeIcon1" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+        
+                <div>
+                    <label for="password2" class="block text-sm font-medium text-gray-600">Confirm Password</label>
+                    <div class="relative">
+                        <input type="password" name="password2" id="password2"
+                            class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#1970EC]">
+                        <button type="button" onclick="togglePassword('password2', 'eyeIcon2')"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                            <i id="eyeIcon2" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+        
+                <button type="submit" class="w-full flex items-center justify-center px-4 py-2 text-white bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] rounded-md  font-bold"> 
+                    <svg
+                    class="w-6 h-6 -ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <path d="M20 8v6M23 11h-6" />
+                  </svg>
+                  <span class="ml-3">
+                    Sign Up
+                  </span></button>
+            </form>
+
+            <p class="mt-6 text-sm text-center text-gray-600">
+                Already have an account? <a href="{%url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+            </p>
+            <!-- <p class="mt-6 text-xs text-gray-600 text-center">
+              I agree to abide by templatana's
+              <a href="#" class="border-b border-gray-500 border-dotted">
+                Terms of Service
+              </a>
+              and its
+              <a href="#" class="border-b border-gray-500 border-dotted">
+                Privacy Policy
+              </a>
+            </p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 bg-indigo-100 text-center hidden lg:flex">
+        <div  class="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player src="https://lottie.host/fa88ecc7-5037-4b1b-bc2b-a1213611c255/LxbOC3YR8I.lottie" background="transparent" speed="1" style="width: 500px; height: 500px" loop autoplay></dotlottie-player>
+      </div>
+<!-- <div
+        class="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+        style="background-image: url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg');"
+      ></div> -->
+    </div>
+  </div>
+
+
+{% endblock main%}
+
+{% block js%}
+<script>
+    
+
+
+</script>
+<script src="{% static 'js/visibleHidePassword.js' %}"></script>
+{% endblock js%}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

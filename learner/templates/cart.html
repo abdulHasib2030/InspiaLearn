@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<title>Cart | InspiaLearn</title>
+{% endblock title%}
+{% block header %}
+
+<header class="md:container w-[92%] mx-auto  py-4">
+    {% include "includes/nav.html" %}
+    {% if messages %}
+{% for message in messages %}
+<div class="p-3 mt-16 space-y-4 w-full mx-auto max-w-md " id="msg-close">
+    <div class="flex w-96 shadow-lg rounded-lg">
+        <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+            
+            {% if message.tags == 'success' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                </path>
+            </svg>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                </path>
+            </svg>
+            {% endif %}
+        </div>
+        <div
+            class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+            <div>{{message}}</div>
+            <button onclick="msgCloseBtn()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                    width="20" height="20">
+                    <path fill-rule="evenodd"
+                        d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+{% endif %}
+ 
+
+
+</header>
+{% endblock header %}
+
+{% block main%}
+<!-- modal -->
+<!-- You can open the modal using ID.showModal() method -->
+
+
+<div id="myModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden ">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Confirm Deletion</h2>
+        <p id="text-delete" class="mb-6"></p>
+        <div class="flex justify-end space-x-4">
+            <button id="closeModal" class="bg-gray-300 text-gray-800 px-4 py-2 rounded">
+                Cancel
+            </button>
+            <button id="deleteItem" class="bg-red-500 text-white px-4 py-2 rounded">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<main class="my-16 w-[90%] mx-auto ">
+    
+    <h1 class="md:text-4xl text-2xl font-bold  ">Shopping Cart</h1>
+    <h4 class="font-semibold text-xl mt-7">{{ cartlen }} Courses in Cart</h4>
+    {% if cartlen == 0 %}
+        <div class="text-center space-y-3 my-4 mb-10 border p-10 border-gray-300">
+            <img src="{% static 'assets/logo/shopping.png' %}" class="w-[20%] mx-auto" alt="Empty Cart Image" />
+            <h1 class="text-2xl font-semibold text-red-500">Your Cart is Empty</h1>
+            <p>Looks like you haven't added anything to your cart yet</p>
+        </div>
+        {% else %}
+    <div class=" mb-20 grid md:grid-cols-12 gap-8 ">
+        <!-- item -->
+        
+        <div class="md:col-span-9 order-2 md:order-1 ">
+
+
+
+
+
+            {% for i, lectureTotal in cartItem %}
+
+
+
+            <div class="divider"></div>
+            <div class="flex  justify-between gap-7">
+                <div class="flex gap-4">
+                    <a class="w-24 md:w-52" href="{% url 'course_details' uid=i.publish_course.course.uid %}">
+                    <img class="" src="{{i.publish_course.landing_page.coure_image.url}}" alt=""></a>
+                    <div>
+                        <h4 class="font-bold md:text-xl"> {{i.publish_course.course.title}}</h4>
+                        <p>By {{i.publish_course.course.instructor.user.first_name}}</p>
+                        <div class="my-3 md:flex items-center gap-2">
+                            <p>{{i.publish_course.video_length}}</p>
+                            <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>{{lectureTotal}} lectures</p>
+                            <p class="flex items-center"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>{{i.publish_course.landing_page.level}}</p>
+
+                        </div>
+
+                        <div class=" text-xl space-x-8 flex items-center">
+                            <a id="deleteBtn" onclick="openModal('{{ i.id }}', 'cart')" class="cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="text" name="data" value="{{i.id}} wish" class="hidden">
+                                <button type="submit" class="">
+                                <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </form>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div>
+                    <h4 class="font-bold flex items-center gap-1"><i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                        {{i.publish_course.pricing.after_discount_price}}</h4>
+                    <h4 class="font-bold flex items-center gap-1"><i class="fa-solid fa-bangladeshi-taka-sign"></i><del>
+                            {{i.publish_course.pricing.main_price}}.0</del></h4>
+                    <h4 class="font-bold flex items-center gap-1"> {{i.publish_course.pricing.discount_percent}}% off
+                    </h4>
+
+                </div>
+            </div>
+
+
+            {% endfor %}
+
+        </div>
+        <!-- Checkout -->
+        <div class="md:col-span-3 order-1 md:order-2 ">
+            <h4 class="text-2xl font-semibold text-gray-600 mb-4">Total:</h4>
+            <h4 class="md:text-4xl text-2xl items-center font-bold flex gap-1"><i
+                    class="fa-solid fa-bangladeshi-taka-sign"></i>{{total}}</h4>
+            <h4 class=" text-xl flex gap-1 items-center text-gray-500"><i
+                    class="fa-solid fa-bangladeshi-taka-sign"></i><del>{{discount}}</del></h4>
+            <h4 class=" text-xl flex gap-1 font-semibold items-center ">{{percent}}% off</h4>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="text" name="checkout" value="checkout" class="hidden">
+                <button class="py-2 px-7 mb-3 w-full bg-[#2882EC] text-white font-semibold text-xl my-4"
+                    type="submit">Checkout</button>
+            </form>
+            <div class="divider"></div>
+            <div class="flex">
+                <input type="text" name="coupon" id="coupon" placeholder="Enter Coupon"
+                    class="w-full px-4 py-[12px]  border-2 border-r-0 border-black  focus:outline-none focus:ring-2 focus:ring-[#E6326F]">
+                <button class="bg-[#2882EC] text-white font-bold px-4 border border-[#684FB7]">Apply</button>
+            </div>
+        </div>
+       
+
+    </div>
+
+    {% endif %}
+
+    {% if wishlen != 0 %}
+    <h4 class="font-semibold text-xl mt-20">Wishlisted item</h4>
+    {% for i, lectureTotal in wishListItem %}
+
+
+
+    <div class="divider"></div>
+    <div class="flex  justify-between gap-7 mb-20">
+        <div class="flex gap-4">
+            
+            <a class="w-24 md:w-52" href="{% url 'course_details' uid=i.publish_course.course.uid %}">
+                <img class="" src="{{i.publish_course.landing_page.coure_image.url}}" alt=""></a>
+            <div>
+                <h4 class="font-bold md:text-xl"> {{i.publish_course.course.title}}</h4>
+                <p>By {{i.publish_course.course.instructor.user.first_name}}</p>
+                <div class="my-3 md:flex items-center gap-2">
+                    <p>{{i.publish_course.video_length}}</p>
+                    <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor" class="h-5 w-5">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                clip-rule="evenodd" />
+                        </svg>{{lectureTotal}} lectures</p>
+                    <p class="flex items-center"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor" class="h-5 w-5">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                clip-rule="evenodd" />
+                        </svg>{{i.publish_course.landing_page.level}}</p>
+
+                </div>
+
+                <div class=" text-xl space-x-8 flex items-center">
+                    <a id="deleteBtn" onclick="openModal('{{ i.id }}', 'wish')" class="cursor-pointer">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="text" name="data" value="{{i.id}} cart" class="hidden">
+                        <button type="submit" class="">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
+                    </form>
+                    
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+            <h4 class="font-bold flex items-center gap-1"><i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                {{i.publish_course.pricing.after_discount_price}}</h4>
+            <h4 class="font-bold flex items-center gap-1"><i class="fa-solid fa-bangladeshi-taka-sign"></i><del>
+                    {{i.publish_course.pricing.main_price}}.0</del></h4>
+            <h4 class="font-bold flex items-center gap-1"> {{i.publish_course.pricing.discount_percent}}% off
+            </h4>
+
+        </div>
+    </div>
+
+
+    {% endfor %}
+    {% endif %}
+
+
+
+
+
+</main>
+{% endblock main%}
+
+{% block js%}
+<script>
+    // Get references to elements
+    // Get modal and button references
+    const modal = document.getElementById('myModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const deleteItemBtn = document.getElementById('deleteItem');
+    let deleteUrl = ""; // To store the dynamic URL
+
+    // Open the modal and set the delete URL
+    function openModal(itemId, data) {
+         // Update the URL format based on your Django route
+        modal.classList.remove('hidden');
+        if(data == 'cart'){
+            deleteUrl = `/cart/delete/${itemId}/`;
+           const deleteText = document.getElementById('text-delete')
+            deleteText.innerText = `Are you sure you want to delete this cart item?`
+        }
+        else{
+            deleteUrl = `/cart/delete/wishlist/${itemId}/?step=cart`;
+            
+            const deleteText = document.getElementById('text-delete')
+            deleteText.innerText = `Are you sure you want to delete this wishlist item?`
+        }
+    }
+
+    // Close the modal
+    closeModalBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    // Handle the delete action
+    deleteItemBtn.addEventListener('click', () => {
+        if (deleteUrl) {
+            // Redirect to the deletion URL
+            window.location.href = deleteUrl;
+        }
+    });
+
+
+    // add cartWish remove add cart page
+    let addremove = "";
+    const addCartWish = (id, data) =>{
+        if (data == 'wish'){
+
+        }
+    }
+
+
+ 
+</script>
+{% endblock js%}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

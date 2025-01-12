@@ -1,0 +1,127 @@
+{% extends 'main/descrive_course.html' %}
+
+{% block course_data %}
+<div id="notification" class="hidden p-4 mb-3 bg-red-100 text-red-800 border border-red-300 rounded w-fit mx-auto relative">
+    
+    <span id="hidden-btn" class="absolute right-1 top-1 text-xs text-black cursor-pointer"><i class="fa-solid fa-x "></i></span>
+    <span id="message"></span>
+</div>
+
+<div class="w-[90%] mx-auto shadow-xl  bg-white pb-6">
+    <div>
+        <h1 class="pt-3 px-8 text-2xl font-bold">Pricing </h1>
+        <div class="divider divider-gray-400 w-full"></div>
+        <div class="w-11/12 mx-auto ">
+            <form action="" method="post" class="space-y-4">
+                {% csrf_token %}
+
+            <div>
+                <label for="" class="font-semibold text-xl">Enter your course price</label>
+                
+                    <label class="input input-bordered rounded-none border-black md:w-2/4  mt-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                        <input id="main_price"  type="number" value="{{ item.main_price|default_if_none:'' }}" placeholder="e.g. 5000 tk " name="main_price" />
+                      </label>
+                   
+
+               
+            </div>
+            <div>
+
+                <label for="" class="font-semibold text-xl">What percentage discount would you be willing to offer for this course?</label> 
+                <label class="input input-bordered rounded-none border-black md:w-2/4  mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                    <input id="discount" name="discount" type="number" value="{{ item.discount_percent|default_if_none:'' }}" placeholder="e.g. 0 to 100 " />
+                  </label>
+                    
+            </div>
+            <div>
+                
+                <label for="" class="font-semibold text-xl">After discount price</label> 
+                <label class="input input-bordered rounded-none border-black md:w-2/4  mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                    <input id="after-discount" type="number" value="{{item.after_discount_price|default_if_none:'0'}}" disabled />
+                  </label>
+                
+            </div>
+
+        <button class="py-2 px-7 mb-3 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl" type="submit">Save</button>
+
+        </form>
+        </div>
+    </div>
+</div>
+
+{% endblock course_data %}
+
+{% block js%}
+<script>
+    function showErrorNotification(message) {
+    const notification = document.getElementById("notification");
+    const messageSpan = document.getElementById("message");
+    const hiddenBtn = document.getElementById('hidden-btn')
+
+    hiddenBtn.addEventListener('click', ()=>{
+        notification.classList.add('hidden')
+    })
+    
+    let timeLeft = 5;
+    // Set the message and make the notification visible
+    function updateMsg (){
+        messageSpan.textContent = `${message} (Closing in ${timeLeft} seconds)`;
+        timeLeft -= 1
+    }
+
+   notification.classList.remove('hidden')
+   updateMsg()
+
+   const intervalID = setInterval(() => {
+     if (timeLeft>= 0){
+        updateMsg()
+     }
+     else{
+        clearInterval(intervalID)
+        notification.classList.add('hidden')
+     }
+   }, 1000);
+
+}
+
+
+    const mainPrice = document.getElementById('main_price')
+    const discount = document.getElementById('discount')
+    const afterDiscount = document.getElementById('after-discount')
+
+    mainPrice.addEventListener('keyup', function(e){
+        afterDiscount.value = e.target.value 
+        if (!mainPrice.value){
+            discount.value = e.target.value
+        }
+    })
+  
+    discount.addEventListener('keyup', function(e){
+        const discountPrice = e.target.value
+        if (parseInt(e.target.value) < 0 || parseInt(e.target.value) > 100){
+            afterDiscount.value = mainPrice.value
+            discount.value = ''
+            return showErrorNotification("You can't less than 0 and higher than 100.")
+        }
+        let total = mainPrice.value
+        let temp = total
+        if (discountPrice){
+            const main = parseInt(total) * (parseInt(e.target.value) / 100)
+            temp -= main
+        }
+        else{
+            temp = total
+            console.log(temp, total);
+        }
+        afterDiscount.value = temp
+        
+    //    afterDiscount.value = main
+    //    if e.target.target
+        
+    })
+
+</script>
+{% endblock js%}

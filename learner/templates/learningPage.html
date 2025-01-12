@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title%}
+<title>All Courses - InspiaLearn</title>
+{% endblock title%}
+{% block header %}
+
+<header class="lg:container w-[95%] mx-auto  py-4">
+    {% include "includes/nav.html" %}
+    {% if messages %}
+{% for message in messages %}
+<div class="p-3 mt-16 space-y-4 w-full mx-auto max-w-md" id="msg-close">
+    <div class="flex w-96 shadow-lg rounded-lg">
+        <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+            
+            {% if message.tags == 'success' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                </path>
+            </svg>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                height="20">
+                <path fill-rule="evenodd"
+                    d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                </path>
+            </svg>
+            {% endif %}
+        </div>
+        <div
+            class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+            <div>{{message}}</div>
+            <button onclick="msgCloseBtn()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                    width="20" height="20">
+                    <path fill-rule="evenodd"
+                        d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+{% endif %}
+  
+
+
+</header>
+{% endblock header %}
+
+{% block main%}
+<div class="my-16">
+    <div>
+        <div class="bg-black text-center space-y-4 p-12 text-white">
+            <h1 class="text-4xl font-bold mb-4">My learning</h1>
+
+           <a href="{% url 'learning-page' %}"> <button id="all-courses"
+                class="text-xl font-bold border-2 border-white  py-2 px-6 hover:bg-gray-300 hover:text-black">All
+                courses</button></a>
+           <a href="{% url 'wishlist' %}"> <button id="wishlist"
+                class="text-xl font-bold border-2 border-white  py-2 px-6 hover:bg-gray-300 hover:text-black">Wishlist</button></a>
+
+        </div>
+
+
+        <div>
+            <div id="courses-show" class="lg:container w-[95%] mx-auto my-10">
+                {% if purchaseCourse %}
+                {% for i in purchaseCourse%}
+                {% for j in i.course.all %}
+                <div
+                    class=" items-center justify-start  border border-transparent bg-[#F7F9FA] transition duration-150 ease-in-out hover:scale-105 rounded-lg p-6 mb-8 md:flex gap-4">
+                    <img class="md:w-80 w-full rounded-lg" src="{{j.landing_page.coure_image.url}}" alt="">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl font-bold mt-3 md:mt-0">{{j.course.title}}</h1>
+                        <p>By {{j.course.instructor.user.first_name}}</p>
+                        <a href="{% url 'watching_page' slug=j.slug %}">
+                            <button
+                                class="bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] font-bold text-xl mt-4 py-2 px-6 border border-[#684FB7] text-white">
+                                Continue Course</button></a>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% endfor %}
+                {%else%}
+                <div class="h-52 flex justify-center items-center mb-20">
+                    <a href="{% url 'home' %}"><button class="bg-black py-2 px-6 text-white font-black text-2xl">Browse courses now</button></a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- wishlist show item-->
+            <div id="wishlist-show" class="lg:container w-[95%] mx-auto my-10 hidden">
+                {% if wishlistItem  %}
+                <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-4 ">
+                    {% for i in wishlistItem %}
+                    <div class="card cursor-pointer shadow-md relative card-compact bg-base-100 w-72 mx-auto rounded-none transition duration-150 ease-in-out hover:scale-105">
+                        <a href="{% url 'course_details' uid=i.publish_course.course.uid %}" >
+                        <figure>
+                          <img
+                            src="{{i.publish_course.landing_page.coure_image.url}}"
+                            alt="image not found"  class="hover:bg-black"/>
+                        </figure>
+                        <div class="card-body">
+                          <h2 class="card-title">{{i.publish_course.course.title}}</h2>
+                          <p>{{i.publish_course.course.instructor.user.first_name}}</p>
+                        <div class="flex justify-between">
+                            <div class="flex gap-2">
+                                <p>{{i.publish_course.video_length}}</p>
+                            <p>{{i.publish_course.totalLecture}}</p>
+                            </div>
+                            
+                            <div>
+                                <p><a href="{% url 'wish-delete' i.id%}?next={{request.path}}  " class="text-primary">Remove wishlist</a></p>
+                            </div>
+                        </div>
+                        </div>
+                      
+                    </a>
+                      </div>
+
+                    {% endfor %}
+
+                </div>
+                {%else%}
+                <div class="h-52 flex justify-center items-center mb-20">
+                    <a href="{% url 'home' %}"><button class="bg-black py-2 px-6 text-white font-black text-2xl">Browse courses now</button></a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main%}
+
+{% block js%}
+<script>
+    const path = (window.location.pathname.split('/'));
+    const currentPath = (path[path.length - 2]);
+    if (currentPath === 'learning') {
+        const allCourses = document.getElementById('all-courses')
+        allCourses.classList.add('bg-gray-300', 'text-black')
+    }
+    else{
+      const courseShow = document.getElementById('courses-show')
+      const wishList = document.getElementById('wishlist')
+      const wishlistShow = document.getElementById('wishlist-show')
+      wishlistShow.classList.remove('hidden')
+      wishList.classList.add('bg-gray-300', 'text-black')
+
+      courseShow.classList.add('hidden')
+    }
+</script>
+{% endblock js%}
+
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

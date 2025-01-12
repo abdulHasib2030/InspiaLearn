@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>{{course.course.title}}</title>
+{% endblock title %}
+{% block style %}
+<style>
+    .play-btn {
+
+        background-size: contain;
+        width: 80px;
+        height: 80px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+
+    }
+
+    .play-btn.hidden {
+        display: none;
+    }
+</style>
+{% endblock style %}
+
+{% block header %}
+
+<header class="md:container  w-[92%] mx-auto  py-4">
+
+    {% include "includes/nav.html" %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="p-3 space-y-4 mt-16  w-full mx-auto max-w-md" id="msg-close">
+        <div class="flex w-96 shadow-lg rounded-lg">
+            <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+
+                {% if message.tags == 'success' %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                    </path>
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                    </path>
+                </svg>
+                {% endif %}
+            </div>
+            <div
+                class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+                <div>{{message}}</div>
+                <button onclick="msgCloseBtn()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                        width="20" height="20">
+                        <path fill-rule="evenodd"
+                            d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+
+</header>
+{% endblock header %}
+
+
+{% block main %}
+<main class="my-20 md:container w-[90%] mx-auto ">
+
+    <div class="w-11/12 mx-auto lg:flex gap-7">
+        <!-- <div class="lg:w-1/2 ">
+            <video controlsList="nodownload"  controls poster="{{course.landing_page.coure_image.url}}"  tabindex="-1">
+                <source  id="videoField" src="{{course.landing_page.promotional_video.url}}" type="video/mp4">
+    
+            </video>
+    
+        </div> -->
+        <div class="lg:w-1/2 ">
+            <div class="relative">
+
+
+                <!-- Video Container -->
+                <video id="customVideo" controlsList="nodownload" class="w-full"
+                    poster="{{course.landing_page.coure_image.url}}" tabindex="-1">
+                    <source id="videoField" src="{{course.landing_page.promotional_video.url}}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <!-- Custom Play Button -->
+                <button id="playButton" class="play-btn absolute inset-0 m-auto"><img
+                        src="{% static 'assets/logo/play.png' %}" alt=""></button>
+            </div>
+        </div>
+        <div class="space-y-4 ">
+            <h1 class="font-bold text-2xl ">{{course.course.title}}</h1>
+            <p>{{course.landing_page.course_subtitle}}</p>
+
+            <!-- pricing -->
+            <div class="flex items-center gap-3">
+
+                <h4 class="font-bold text-2xl"> <i
+                        class="fa-solid fa-bangladeshi-taka-sign"></i>{{course.pricing.after_discount_price}}</h4>
+                <del><i class="fa-solid fa-bangladeshi-taka-sign"></i>{{course.pricing.main_price}}.0</del>
+                <p>{{course.pricing.discount_percent}}% off</p>
+
+            </div>
+
+            <!-- add to cart  -->
+            <div class=" flex gap-4">
+                {% if request.user.is_authenticated %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input id="dataCartWishList" type="text" name="add-cart" value="" class="hidden">
+                    {% if cart_disable %}
+                    <a href="{% url 'watching_page' slug=course.slug %}"
+                        class="border  border-black py-3 px-6 font-semibold text-2xl  bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] hover:opacity-30   text-white">Continue
+                        Course</a>
+                    {% else %}
+                    <button onclick="cartWishListAdd('cart')" type="submit"
+                        class="border  border-black py-3 px-6 font-semibold text-2xl hover:bg-slate-100">Add to
+                        cart</button>
+                    {% endif %}
+
+                    <button onclick="cartWishListAdd('wishList')"
+                        class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                            class=" fa-regular fa-heart"></i></button>
+
+                </form>
+
+                {% else %}
+                <a href="{% url 'login' %}">
+                    <button type="submit"
+                        class="border  border-black py-3 px-6 font-semibold text-2xl hover:bg-slate-100">Add to
+                        cart</button>
+                    <button class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                            class=" fa-regular fa-heart"></i></button></a>
+                {% endif %}
+                <!-- <button class="border  border-black px-6 py-3 text-2xl hover:bg-slate-100"><i
+                        class=" fa-regular fa-heart"></i></button> -->
+            </div>
+
+            <!-- what you'll learn -->
+            <div class="border  border-black p-7 my-4">
+                <h1 class="font-bold text-2xl">What you'll learn</h1>
+                <div class="grid grid-cols-2 gap-5 mt-3" id="learn-what-we">
+
+                    {% for i in lerner %}
+
+                    <div class="flex gap-2 top">
+                        <i class="fa-solid fa-check mt-1 mr-3"></i>
+
+                        <p> {{i}}</p>
+                    </div>
+
+                    {% endfor %}
+
+
+                </div>
+                <div>
+                    <!-- <h3 class="text-blue-500 font-semibold mt-3 cursor-pointer" onclick="learnWhatFun()">Show more</h3> -->
+                </div>
+            </div>
+
+            <!-- This course includes: -->
+            <div>
+                <h1 class="text-2xl font-bold mt-5 mb-2">This course includes:</h1>
+                <div class="grid grid-cols-2">
+                    <div><i class="fa-solid fa-video mr-2"></i> {{course.video_length}} on-demand video</div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- course content -->
+    </div>
+    <div class="w-11/12 mx-auto">
+        <h1 class="text-2xl font-bold mt-7 mb-2">Course content</h1>
+
+        <div class="border border-black bg-[#E5E7EB] p-4 my-3 ">
+
+            {% for mdule in module %}
+
+            <div class="collapse collapse-arrow border border-base-100  rounded-box mb-4">
+                <input type="checkbox" class="" />
+                <label for="collapse-trigger"
+                    class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+                    <div class="flex items-center  space-x-3">
+                        <h4 class="font-bold text-xl ">Module {{forloop.counter}}</h4>
+                        <div class="flex space-x-3 items-center">
+                            <p>{{mdule.title}}</p>
+
+                        </div>
+
+                    </div>
+
+                </label>
+
+                <div class="collapse-content ">
+                    {% for vid in mdule.videos.all %}
+
+                    <div class="flex justify-between items-center mb-3">
+                        {% if course.purchanse_course %}
+                        <a href="{% url 'preview_course' uid=uid slug=vid.slug %}" class="flex  items-center gap-4 ">
+                            <i class="fa-solid fa-video "></i>
+                            <p class="link link-primary">{{vid.title}}</p>
+                        </a>
+                        {% else %}
+                        <a class="flex  items-center gap-4 ">
+                            <i class="fa-solid fa-video "></i>
+                            <p class="">{{vid.title}}</p>
+                        </a>
+                        {% endif %}
+                        <p>{{vid.duration}}</p>
+                    </div>
+
+                    {% endfor %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <h1 class="text-2xl font-bold mt-7 mb-2">Requirements</h1>
+        <div>
+            <ul class="list-disc ml-4">
+                <li>{{course.intended_lerner.course_requirement}}</li>
+            </ul>
+        </div>
+
+        <h1 class="text-2xl font-bold mt-7 mb-2">Description</h1>
+        {% if course.landing_page.course_description %}
+        <span id="short-description">{{course.landing_page.course_description|slice:":300" }}</span>
+        <span id="full-description" class="hidden">
+            {{ course.landing_page.course_description}}
+        </span>
+        <button id="toggle-button" class="link link-primary" onclick="toggleDescription()">Show More</button>
+        {% else %}
+        <p>No Description added</p>
+        {% endif %}
+
+        <h1 class="text-2xl font-bold mt-7 mb-2">Who this course is for</h1>
+        <div>
+            <ul class="list-disc ml-4">
+                <li>{{course.intended_lerner.who_this_course}}</li>
+            </ul>
+        </div>
+
+
+    </div>
+
+
+
+</main>
+{% endblock main %}
+
+
+{% block js %}
+<script src="{% static 'js/video.js' %}"></script>
+
+<script>
+
+    function toggleDescription() {
+        const shortDesc = document.getElementById('short-description');
+        const fullDesc = document.getElementById('full-description');
+        const button = document.getElementById('toggle-button');
+
+        if (shortDesc.style.display === 'none') {
+            // Show less
+            shortDesc.style.display = 'inline';
+            fullDesc.style.display = 'none';
+            button.innerText = 'Show More';
+        } else {
+            // Show more
+            shortDesc.style.display = 'none';
+            fullDesc.style.display = 'inline';
+            button.innerText = 'Show Less';
+        }
+    }
+
+    // <!-- Cart Or Wish list -->
+    function cartWishListAdd(data) {
+        const dataCartWishList = document.getElementById('dataCartWishList')
+        console.log(data);
+        dataCartWishList.value = data;
+    }
+
+</script>
+
+
+{% endblock js %}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

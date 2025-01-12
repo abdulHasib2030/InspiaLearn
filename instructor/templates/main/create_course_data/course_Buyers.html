@@ -1,0 +1,131 @@
+{% extends 'instructor.html' %}
+
+
+{% block instructor %}
+
+
+<dialog id="my_modal_3" class="modal">
+  <div class="modal-box" id="showModal">
+    <!-- <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    {% for i in review %}
+    <h3 class="text-lg font-bold">{{i.id}}</h3>
+    <p class="py-4">{{i.review_text}}</p>
+    {% endfor %} -->
+  </div>
+</dialog>
+<!-- component -->
+<section class="container mx-auto p-6 font-mono">
+
+  
+
+  <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+    <div class="w-full overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr
+            class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Course title</th>
+            <th class="px-4 py-3">Price</th>
+            <th class="px-4 py-3">Review</th>
+            <th class="px-4 py-3">Date</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          {% for i, j in selling_course %}
+          <tr class="text-gray-700">
+            <td class="px-4 py-3 border">
+              <div class="flex items-center text-sm">
+                <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                  {% if i.user.profile_img %}
+                  <img class="object-cover w-full h-full rounded-full" src="{{i.user.profile_img.url}}" alt=""
+                    loading="lazy" />
+                  {% else %}
+                  <i class="fa-regular fa-user text-2xl"></i>
+                  {% endif %}
+                  <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                </div>
+                <div>
+                  <p class="font-semibold text-black">{% if i.user.user.first_name %}{{i.user.user.first_name}} {% else %} None {% endif %} </p>
+                  <p class="text-xs text-gray-600"></p>
+                </div>
+              </div>
+            </td>
+
+            <td class="px-4 py-3 text-ms font-semibold border">
+              {{j.title}} </td>
+            <td class="px-4 py-3 text-ms font-semibold border"><i class="fa-solid fa-bangladeshi-taka-sign"></i>
+              {{j.price}} </td>
+            <td class="px-4 py-3 text-xs border">
+              <span onclick="openModal('{{ j.id }}', '{{ i.user.id }}')"
+                class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm cursor-pointer">
+                View </span>
+            </td>
+            <td class="px-4 py-3 text-sm border">{{i.date}}</td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock instructor %}
+
+{% block js %}
+<script>
+  const showModal = document.getElementById('showModal')
+  function openModal(course, user) {
+    my_modal_3.showModal()
+     const dataTemp = []
+    fetch(`/instructor/find-review/${user}/${course}/`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch reviews');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        if(data.length > 0){
+       showModal.innerHTML = `
+        <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+       
+        
+        <h3 class="text-lg font-bold text-yellow-500">Rating: ${data[0].review_star}</h3>
+        <p class="py-4">Text: ${data[0].review_text}</p>
+        
+      `
+  }
+  else{
+    showModal.innerHTML = `
+        <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+       
+        
+        <h3 class="text-lg font-bold">Rating: None</h3>
+        <p class="py-4">Text: None</p>
+        
+      `
+  }
+   
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+      console.log(dataTemp);
+
+
+   
+    // console.log(window.location);
+
+
+  }
+</script>
+{% endblock js %}

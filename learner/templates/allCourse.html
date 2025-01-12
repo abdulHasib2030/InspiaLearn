@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<title>Search results | InspiaLearn</title>
+{% endblock title%}
+{% block header %}
+
+<header class="md:container w-[92%] mx-auto  py-4">
+    {% include "includes/nav.html" %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="p-3 mt-16 space-y-4 w-full mx-auto max-w-md " id="msg-close">
+        <div class="flex w-96 shadow-lg rounded-lg">
+            <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+
+                {% if message.tags == 'success' %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                    </path>
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                    </path>
+                </svg>
+                {% endif %}
+            </div>
+            <div
+                class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+                <div>{{message}}</div>
+                <button onclick="msgCloseBtn()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                        width="20" height="20">
+                        <path fill-rule="evenodd"
+                            d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
+
+</header>
+{% endblock header %}
+
+{% block main%}
+<div class="my-20 w-[90%] mx-auto">
+    <div class="md:flex justify-between items-end ">
+        <div class="space-y-5">
+            <h1 class="font-bold text-3xl ">{{len}} results for "{{query}}"</h1>
+            <div class="flex gap-2">
+                <button id="filter-btn"
+                    class="flex hidden items-center text-xl font-bold gap-2 border border-black rounded-md p-3 hover:bg-gray-200"><img
+                        src="{% static 'assets/logo/filter.png' %}" class="w-8" alt="">Filter</button>
+                <button class=" text-sm  text-start gap-2 border border-black rounded-md p-3 hover:bg-gray-200">Sort by
+                 
+                    <select onchange="filterReviews(this.value)" name="select" class="hover:bg-gray-200 text-lg mt-2 focus:bg-none w-full">
+
+                        <option value="most_reviewed" {% if request.GET.sort == 'most_reviewed' %}selected{% endif %} >Most Reviewed</option>
+                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{%endif%}>Newest</option>
+                    </select>
+                </button>
+            </div>
+        </div>
+        <p class="text-gray-400 font-bold">{{len}} results</p>
+    </div>
+    <div class="grid grid-cols-12 my-4 gap-4">
+        <div id="hidden-filter-data" class="md:col-span-3 hidden bg-gray-400  ">
+            <div>
+                <h4 class="text-2xl font-bold"> Ratings</h4>
+                <div class="flex flex-col gap-4 mt-4">
+                    <div class="text-yellow-500 items-center flex gap-3">
+                        <input type="radio" name="radio-1" class="radio" />
+                        <p>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><span class="ml-2 text-black">(5.0)</span>
+                        </p>
+                    </div>
+                    <div class="text-yellow-500 items-center flex gap-3">
+                        <input type="radio" name="radio-1" class="radio" />
+                        <p>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+
+                            <i class="fa-regular fa-star"></i><span class="ml-2 text-black">(4.0)</span>
+                        </p>
+                    </div>
+                    <div class="text-yellow-500 items-center flex gap-3">
+                        <input type="radio" name="radio-1" class="radio" />
+                        <p>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i><span class="ml-2 text-black">(3.0)</span>
+                        </p>
+                    </div>
+                    <div class="text-yellow-500 items-center flex gap-3">
+                        <input type="radio" name="radio-1" class="radio" />
+                        <p>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i><span class="ml-2 text-black">(2.0)</span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="card-data" class="col-span-12 ">
+            {% for i in search_results%}
+            <a href="{% url 'course_details' uid=i.course.uid%}">
+                <div class="border-b-2 py-5 px-2 flex items-center gap-4 hover:bg-[#F7F9FA]">
+                    <div class="">
+                        <img src="{{i.landing_page.coure_image.url}}" class="w-52 mx-auto" alt="">
+                    </div>
+
+                    <div class="w-full ">
+                        <div class="text-xl  font-bold flex items-start  justify-between">
+                            <h1 class="">{{i.landing_page.title}}</h1>
+                            <h4><i class="fa-solid fa-bangladeshi-taka-sign"></i> {{i.pricing.after_discount_price}}</h4>
+                        </div>
+                        <p>{{i.landing_page.course_subtitle}}</p>
+                        <p>By {{i.course.instructor.user.first_name}}</p>
+
+                        <div class="my-3 md:flex items-center gap-2">
+                            <p>{{i.video_length}}</p>
+                            <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>{{i.totalLecture}} lectures</p>
+                            <p class="flex items-center"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor" class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>{{i.landing_page.level}}</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock main%}
+
+{% block js%}
+
+<script>
+    // const filterBtn = document.getElementById('filter-btn')
+    // const hiddenFilterData = document.getElementById('hidden-filter-data')
+    // const cardData = document.getElementById('card-data')
+    // let flag = true;
+    // filterBtn.addEventListener('click', () => {
+    //     if (flag) {
+    //         hiddenFilterData.classList.add('hidden')
+    //         cardData.classList.remove('col-span-9')
+    //         cardData.classList.add('col-span-12')
+    //         flag = false;
+    //     }
+    //     else {
+    //         hiddenFilterData.classList.remove('hidden')
+    //         cardData.classList.remove('col-span-12')
+    //         cardData.classList.add('col-span-9')
+    //         flag = true
+    //     }
+    // })
+
+    const filterReviews = (selectOption) =>{
+        console.log(selectOption)
+        const splt = window.location.href.split('&')
+        const url = splt[0] + `&sort=${selectOption}`
+        console.log(url)
+
+        window.location.href = url
+    }
+
+</script>
+
+{% endblock js%}
+
+{% block footer %}
+{% include "includes/footer.html" %}
+{% endblock footer %}

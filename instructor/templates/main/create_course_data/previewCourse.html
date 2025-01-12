@@ -1,0 +1,159 @@
+{% extends 'main/descrive_course.html' %}
+
+{% block course_data %}
+
+<div class="mb-5 ">
+    <form action="" method="post">
+        {% csrf_token%}
+<button type="submit" class="py-2 px-7 mb-3 bg-gradient-to-r from-[#1D72ED]  to-[#2ABAEE] text-white font-semibold text-xl text-center ">Submit Your Course</button>
+</form>
+</div>
+<div class="w-11/12 mx-auto lg:flex gap-7">
+    <div class="lg:w-1/2 ">
+        <video controlsList="nodownload" controls tabindex="-1">
+            <source id="videoField" src="{{promotional_video.url}}" type="video/mp4">
+
+        </video>
+
+    </div>
+
+    <div class="space-y-4 ">
+        <h1 class="font-bold text-2xl ">{{title}}</h1>
+        <p>{{subtitle}}</p>
+
+        <!-- pricing -->
+        <div class="flex items-center gap-3">
+
+            <h4 class="font-bold text-2xl"> <i
+                    class="fa-solid fa-bangladeshi-taka-sign"></i>{{pricing.after_discount_price}}</h4>
+            <del><i class="fa-solid fa-bangladeshi-taka-sign"></i>{{pricing.main_price}}.0</del>
+            <p>{{pricing.discount_percent}}% off</p>
+
+        </div>
+
+        <!-- what you'll learn -->
+        <div class="border  border-black p-7 my-4">
+            <h1 class="font-bold text-2xl">What you'll learn</h1>
+            <div class="grid grid-cols-2 gap-5 mt-3" id="learn-what-we">
+
+                {% for i in lerner %}
+                {% if i %}
+                <div class="flex gap-2 top">
+                    <i class="fa-solid fa-check mt-1 mr-3"></i>
+
+                    <p> {{i}}</p>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+
+            </div>
+            <div>
+                <h3 class="text-blue-500 font-semibold mt-3 cursor-pointer" onclick="learnWhatFun()">Show more</h3>
+            </div>
+        </div>
+
+        <!-- This course includes: -->
+        <div>
+            <h1 class="text-2xl font-bold mt-5 mb-2">This course includes:</h1>
+            <div class="grid grid-cols-2">
+                <div ><i class="fa-solid fa-video mr-2"></i> {{video_length}} on-demand video</div>
+               
+
+            </div>
+        </div>
+    </div>
+
+    <!-- course content -->
+</div>
+<div class="w-11/12 mx-auto">
+    <h1 class="text-2xl font-bold mt-7 mb-2">Course content</h1>
+
+    <div class="border border-black bg-[#E5E7EB] p-4 my-3 ">
+
+        {% for mdule in module %}
+
+        <div class="collapse collapse-arrow border border-base-100  rounded-box mb-4">
+            <input type="checkbox" class="" />
+            <label for="collapse-trigger" class="collapse-title font-medium flex items-center space-x-2 cursor-pointer">
+                <div class="flex items-center  space-x-3">
+                    <h4 class="font-bold text-xl ">Module {{forloop.counter}}</h4>
+                    <div class="flex space-x-3 items-center">
+                        <p>{{mdule.title}}</p>
+
+                    </div>
+
+                </div>
+
+            </label>
+
+            <div class="collapse-content ">
+                {% for vid in mdule.videos.all %}
+
+                <div class="flex justify-between items-center mb-3">
+                    <a href="{% url 'preview_course' uid=uid slug=vid.slug %}" class="flex  items-center gap-4 ">
+                        <i class="fa-solid fa-video "></i>
+                        <p class="link link-primary">{{vid.title}}</p>
+                    </a>
+                    <p>{{vid.duration}}</p>
+                </div>
+
+                {% endfor %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    
+    <h1 class="text-2xl font-bold mt-7 mb-2">Requirements</h1>
+    <div>
+        <ul>
+            <li>{{requirement}}</li>
+        </ul>
+    </div>
+
+    <h1 class="text-2xl font-bold mt-7 mb-2">Description</h1>
+    {% if description %}
+    <span id="short-description">{{description|slice:":300" }}</span>
+    <span id="full-description" class="hidden">
+        {{ description }}
+    </span>
+    <button id="toggle-button" class="link link-primary" onclick="toggleDescription()">Show More</button>
+    {% else %}
+    <p>No Description added</p>
+    {% endif %}
+
+    <h1 class="text-2xl font-bold mt-7 mb-2">Who this course is for</h1>
+    <div>
+        <ul>
+            <li>{{who_this_course}}</li>
+        </ul>
+    </div>
+
+
+</div>
+
+{% endblock course_data %}
+
+{% block js %}
+<script>
+    function toggleDescription() {
+        const shortDesc = document.getElementById('short-description');
+        const fullDesc = document.getElementById('full-description');
+        const button = document.getElementById('toggle-button');
+
+        if (shortDesc.style.display === 'none') {
+            // Show less
+            shortDesc.style.display = 'inline';
+            fullDesc.style.display = 'none';
+            button.innerText = 'Show More';
+        } else {
+            // Show more
+            shortDesc.style.display = 'none';
+            fullDesc.style.display = 'inline';
+            button.innerText = 'Show Less';
+        }
+    }
+</script>
+{% endblock js %}
