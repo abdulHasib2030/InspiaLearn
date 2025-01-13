@@ -93,7 +93,7 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://inspialearn_user:6uZ18cLcsgzSjF3wzBG8icDnUKSebTOB@dpg-ctc2ott2ng1s73bt6t8g-a.singapore-postgres.render.com/inspialearn',
+        default='postgresql://inspialearn_h65v_user:gABco7qmgZT5cXuyiuflSTC2LYxWdKR7@dpg-cu2aq952ng1s73fukpug-a.singapore-postgres.render.com/inspialearn_h65v',
         conn_max_age=600
     )
 }
