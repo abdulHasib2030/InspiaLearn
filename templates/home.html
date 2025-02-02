@@ -7,6 +7,25 @@
 
 {% block style %}
 <style>
+.video-item-wrapper {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.video-item-wrapper:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.video-item {
+    width: 500px; /* Adjust video width */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+
     .font-monrope {
         font-family: "Manrope", sans-serif;
     }
@@ -24,82 +43,84 @@
 
 
     .star-rating {
-	white-space: nowrap;
-}
-.star-rating [type="radio"] {
-	appearance: none;
-}
-.star-rating i {
-	font-size: 1.2em;
-	transition: 0.3s;
-}
+        white-space: nowrap;
+    }
 
-/* .star-rating label:is(:hover, :has(~ :hover)) i {
+    .star-rating [type="radio"] {
+        appearance: none;
+    }
+
+    .star-rating i {
+        font-size: 1.2em;
+        transition: 0.3s;
+    }
+
+    /* .star-rating label:is(:hover, :has(~ :hover)) i {
 	transform: scale(1.35);
 	color: #f0da17;
 	animation: jump 0.5s calc(0.3s + (var(--i) - 1) * 0.15s) alternate infinite;
 } */
-.star-rating label:has(~ :checked) i {
-	color: #f0da17;
-    
-	/* text-shadow: 0 0 2px #ffffff, 0 0 10px #f0da17; */
-}
+    .star-rating label:has(~ :checked) i {
+        color: #f0da17;
 
-@keyframes jump {
-	0%,
-	50% {
-		transform: translatey(0) scale(1.35);
-	}
-	100% {
-		transform: translatey(-15%) scale(1.35);
-	}
-}
+        /* text-shadow: 0 0 2px #ffffff, 0 0 10px #f0da17; */
+    }
 
+    @keyframes jump {
 
+        0%,
+        50% {
+            transform: translatey(0) scale(1.35);
+        }
+
+        100% {
+            transform: translatey(-15%) scale(1.35);
+        }
+    }
 </style>
 {% endblock style %}
 {% block header %}
 
 <header class="lg:container w-[90%] mx-auto  py-4">
     {% if messages %}
-{% for message in messages %}
-<div class="p-3 space-y-4 w-full mx-auto max-w-md" id="msg-close">
-    <div class="flex w-96 shadow-lg rounded-lg">
-        <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
-            
-            {% if message.tags == 'success' %}
-            <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
-                height="20">
-                <path fill-rule="evenodd"
-                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
-                </path>
-            </svg>
-            {% else %}
-            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
-                height="20">
-                <path fill-rule="evenodd"
-                    d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
-                </path>
-            </svg>
-            {% endif %}
-        </div>
-        <div
-            class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
-            <div>{{message}}</div>
-            <button onclick="msgCloseBtn()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
-                    width="20" height="20">
+    {% for message in messages %}
+    <div class="p-3 space-y-4 w-full mx-auto max-w-md" id="msg-close">
+        <div class="flex w-96 shadow-lg rounded-lg">
+            <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+
+                {% if message.tags == 'success' %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                    height="20">
                     <path fill-rule="evenodd"
-                        d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
                     </path>
                 </svg>
-            </button>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                    </path>
+                </svg>
+                {% endif %}
+            </div>
+            <div
+                class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+                <div>{{message}}</div>
+                <button onclick="msgCloseBtn()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                        width="20" height="20">
+                        <path fill-rule="evenodd"
+                            d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
         </div>
-    </div>
 
-</div>
-{% endfor %}
-{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% include "includes/nav.html" %}
     {% include 'includes/banner.html' %}
 
@@ -110,22 +131,79 @@
 {% block main %}
 <main class="mt-10 mb-10 ">
 
-{% include "includes/category.html" %}
-{% include "includes/category_all.html" %}
-{% include "includes/course.html" %}
-
-{% include "includes/feature_course.html" %}
-{% include "includes/stu_learning_growth.html" %}
-{% include "includes/learner_achieve.html" %}
-{% include "includes/instructor_start.html" %}
+    {% include "includes/category.html" %}
+    {% include "includes/category_all.html" %}
+    {% include "includes/course.html" %}
+    {% include "includes/short_videos.html" %}
+   
+    {% include "includes/feature_course.html" %}
+    {% include "includes/stu_learning_growth.html" %}
+    {% include "includes/learner_achieve.html" %}
+    {% include "includes/instructor_start.html" %}
 
 </main>
 {% endblock main %}
 
 
+{% block js %}
 
+<script>
+    // ------------ carosul main section start --------------//
 
+    document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
+
+        const carousel = wrapper.querySelector('.carousel-id');
+
+        const prevBtn = wrapper.querySelector('.prev');
+        const nextBtn = wrapper.querySelector('.next');
+        let scrollAmount = 0;
+
+        prevBtn.style.display = 'none';
+
+        function updateButtonVisibility() {
+            if (carousel.scrollLeft === 0) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+            }
+
+            if (carousel.scrollWidth - carousel.clientWidth === carousel.scrollLeft) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        // Handle Next Button
+        nextBtn.addEventListener('click', () => {
+            const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+            scrollAmount = Math.min(maxScrollLeft, scrollAmount + carousel.clientWidth);
+            carousel.scrollTo({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+            setTimeout(updateButtonVisibility, 500)
+        });
+
+        // Handle Prev Button
+        prevBtn.addEventListener('click', () => {
+            scrollAmount = Math.max(0, scrollAmount - carousel.clientWidth);
+            carousel.scrollTo({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+            setTimeout(updateButtonVisibility, 500);
+        });
+    })
+
+    
+</script>
+    <script src="{% static 'js/short_video.js' %}"></script>
+
+{% endblock js %}
 
 {% block footer %}
 {% include "includes/footer.html" %}
 {% endblock footer %}
+
+

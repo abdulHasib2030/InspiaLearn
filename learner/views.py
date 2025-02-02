@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from instructor.models import publishCourse, Module, Video
+from instructor.models import publishCourse, Module, Video,landingPage
 from learner.models import addCartModel, addWishlistedModel, purchaseCourseModel, reviewCourse
 from django.contrib.auth.models import User
 # Create your views here.
 from django.contrib import messages
 from accounts.models import UserProfile
 from django.db.models import Q, Count
-
+from django.http import JsonResponse
 # def addCartView(request, id):
 
 def cartDataView(request):
@@ -187,6 +187,7 @@ def courseWathingView(request, slug, slug_ = None, ):
             video_list = list(course_videos)
             current_index = video_list.index(current_video)
 
+
             # Determine Next and Previous videos
             next_video = video_list[current_index + 1].slug if current_index + 1 < len(video_list) else None
             previous_video = video_list[current_index - 1].slug if current_index - 1 >= 0 else None
@@ -316,3 +317,29 @@ def searchResultViews(request):
         'len': len(search_results)
     }
     return render(request, 'allCourse.html', context)
+
+
+def get_short_videos(request):
+    page = int(request.GET.get('page', 1))
+    limit = 10
+    start = (page-1) * limit
+    end = start + limit
+    videos = landingPage.objects.all()[start:end]
+    data = [{'id': v.id, "title": v.title, "video": v.promotional_video.url} for v in videos]
+    for i in data:
+        print(i)
+    # return render(request, 'home.html')
+    return JsonResponse({"videos": data},safe=False)
+
+
+def video_detail(request, video_id):
+    video = get_object_or_404(landingPage, id=video_id)
+    print(video.promotional_video.url)
+    return render(request, 'includes/video_details.html', {'video': video})
+
+def related_videos(request, video_id):
+    page = int(request.GET.get("page", 1))
+    videos = landingPage.objects.exclude(id=video_id)  # Exclude the current video
+    # paginator = Paginator(videos, 10)
+    data = [{"id": v.id, "video": v.promotional_video.url} for v in videos.get_page(page)]
+    return JsonResponse({"videos": data},safe=False)

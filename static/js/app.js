@@ -94,9 +94,9 @@
             const div = document.createElement('div');
             const urlSet = `/course/${item.uid}/`
             
-            div.classList ="carousel-item  md:w-1/3 lg:w-1/5 w-4/5 bg-white my-4  rounded-lg   duration-300 ease-in-out transition-transform transform hover:-translate-y-2 cursor-pointer"
+            div.classList ="carousel-item  md:w-1/3 lg:w-1/5 w-4/5 bg-white my-4 h-full  rounded-lg   duration-300 ease-in-out transition-transform transform hover:-translate-y-2 cursor-pointer"
             div.innerHTML = ` <a href="${urlSet}">
-                 <div class="card card-compact bg-base-100  border-2">
+                 <div class="card card-compact h-full bg-base-100  border-2">
                 <figure>
                     <img
                     src=${item.image}
@@ -166,7 +166,7 @@
     }
     
     // console.log(storeCategoryData);
-    //  ------- This code is execute by ChatGpt-------------//
+    
     function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -184,48 +184,48 @@
     
     // ------------ carosul main section start --------------//
     
-    document.querySelectorAll('.carousel-wrapper').forEach(wrapper =>{
+    // document.querySelectorAll('.carousel-wrapper').forEach(wrapper =>{
     
-        const carousel = wrapper.querySelector('.carousel-id');
+    //     const carousel = wrapper.querySelector('.carousel-id');
        
-        const prevBtn = wrapper.querySelector('.prev');
-        const nextBtn = wrapper.querySelector('.next');
-        let scrollAmount = 0;
+    //     const prevBtn = wrapper.querySelector('.prev');
+    //     const nextBtn = wrapper.querySelector('.next');
+    //     let scrollAmount = 0;
     
-        prevBtn.style.display = 'none';
+    //     prevBtn.style.display = 'none';
     
-        function updateButtonVisibility(){
-            if (carousel.scrollLeft === 0) {
-                prevBtn.style.display = 'none';
-            } else {
-                prevBtn.style.display = 'block';
-            }
+    //     function updateButtonVisibility(){
+    //         if (carousel.scrollLeft === 0) {
+    //             prevBtn.style.display = 'none';
+    //         } else {
+    //             prevBtn.style.display = 'block';
+    //         }
     
-            if (carousel.scrollWidth - carousel.clientWidth === carousel.scrollLeft) {
-                nextBtn.style.display = 'none';
-            } else {
-                nextBtn.style.display = 'block';
-            }
-        }
+    //         if (carousel.scrollWidth - carousel.clientWidth === carousel.scrollLeft) {
+    //             nextBtn.style.display = 'none';
+    //         } else {
+    //             nextBtn.style.display = 'block';
+    //         }
+    //     }
     
-        // Handle Next Button
-        nextBtn.addEventListener('click', () => {
-          const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
-          scrollAmount = Math.min(maxScrollLeft, scrollAmount + carousel.clientWidth);
-          carousel.scrollTo({
-            left: scrollAmount,
-            behavior: 'smooth'
-          });
-          setTimeout(updateButtonVisibility, 500)
-        });
+    //     // Handle Next Button
+    //     nextBtn.addEventListener('click', () => {
+    //       const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+    //       scrollAmount = Math.min(maxScrollLeft, scrollAmount + carousel.clientWidth);
+    //       carousel.scrollTo({
+    //         left: scrollAmount,
+    //         behavior: 'smooth'
+    //       });
+    //       setTimeout(updateButtonVisibility, 500)
+    //     });
     
-        // Handle Prev Button
-        prevBtn.addEventListener('click', () => {
-          scrollAmount = Math.max(0, scrollAmount - carousel.clientWidth);
-          carousel.scrollTo({
-            left: scrollAmount,
-            behavior: 'smooth'
-          });
-          setTimeout(updateButtonVisibility, 500);
-        });
-    })
+    //     // Handle Prev Button
+    //     prevBtn.addEventListener('click', () => {
+    //       scrollAmount = Math.max(0, scrollAmount - carousel.clientWidth);
+    //       carousel.scrollTo({
+    //         left: scrollAmount,
+    //         behavior: 'smooth'
+    //       });
+    //       setTimeout(updateButtonVisibility, 500);
+    //     });
+    // })

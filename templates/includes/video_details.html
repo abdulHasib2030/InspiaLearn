@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    * {
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-snap-type: y mandatory;
+    }
+
+    body {
+        color: white;
+        background-color: black;
+        height: 100vh;
+        display: grid;
+        place-items: center;
+    }
+
+    .app_videos {
+        position: relative;
+        height: 750px;
+        background-color: white;
+        overflow: scroll;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 20px;
+        scroll-snap-type: y mandatory;
+    }
+
+    .app_videos::-webkit-scrollbar {
+        display: none;
+    }
+
+    .app_videos {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .video {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background-color: white;
+        scroll-snap-align: start;
+        object-fit: contain;
+    }
+
+    .video_player {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+
+    .videoHeader {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .videoHeader * {
+        padding: 20px;
+    }
+
+    .videoFooter {
+        position: absolute;
+        bottom: 100px;
+        margin-left: 20px;
+    }
+
+    .user_avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 30px;
+    }
+
+    .videoFooter_text {
+        position: absolute;
+        bottom: 0;
+        color: white;
+        display: flex;
+        align-items: center;
+        margin-bottom: 50px;
+    }
+
+    .videoFooter_text h3 {
+        margin-left: 10px;
+    }
+
+    .videoFooter_text h3 button {
+        color: white;
+        font-weight: 900;
+        text-transform: inherit;
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        padding: 5px;
+    }
+
+    .videoFooter_ticker {
+        width: 60px;
+        margin-left: 30px;
+        margin-bottom: 20px;
+        height: fit-content;
+    }
+
+    .videoFooter_ticker marquee {
+        font-size: 12px;
+        padding-top: 7px;
+        color: white;
+    }
+
+    .videoFooter_ticker .material-symbols-outlined {
+        position: absolute;
+        left: 5px;
+        color: white;
+    }
+
+    .videoFooter_actions {
+        display: flex;
+        position: absolute;
+        width: 95%;
+        justify-content: space-between;
+        color: white;
+    }
+
+    .videoFooter_actionsLeft .material-symbols-outlined {
+        padding: 0 7px;
+        font-size: 1.6em;
+    }
+
+    .videoFooter_actionsRight .material-symbols-outlined {
+        font-size: 25px;
+    }
+
+    .videoFooter_actionsRight {
+        display: flex;
+
+    }
+</style>
+
+{% endblock style %}
+
+{% block header %}
+
+<header class="lg:container w-[90%] mx-auto  py-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="p-3 space-y-4 w-full mx-auto max-w-md" id="msg-close">
+        <div class="flex w-96 shadow-lg rounded-lg">
+            <div class="bg-{{message.tags}} py-4 px-6 rounded-l-lg flex items-center">
+
+                {% if message.tags == 'success' %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="text-white fill-current" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                    </path>
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white" viewBox="0 0 16 16" width="20"
+                    height="20">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z">
+                    </path>
+                </svg>
+                {% endif %}
+            </div>
+            <div
+                class="px-4 py-6 bg-white rounded-r-lg flex justify-between items-center w-full border border-l-transparent border-gray-200">
+                <div>{{message}}</div>
+                <button onclick="msgCloseBtn()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-gray-700" viewBox="0 0 16 16"
+                        width="20" height="20">
+                        <path fill-rule="evenodd"
+                            d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% include "includes/nav.html" %}
+
+
+</header>
+{% endblock header %}
+
+{% block main %}
+<section class=" my-16  ">
+    <!-- <div class="video-detail w-1/3 mx-auto max-h-screen">
+        <video src="{{ video.promotional_video.url }}" width="" height="100vh" controls autoplay class=""></video>
+        <h2 class="text-2xl font-bold mt-4">fddfdsfds</h2>
+        <p class="text-gray-600 mt-2">dfsafdsadsf</p>
+    </div> -->
+    <div class="app_videos">
+        <div class="video">
+
+            <video src="{{ video.promotional_video.url }}" class="video_player cursor-pointer"></video>
+
+            <!-- footer starts -->
+            <div class="absolute bottom-11 left-5">
+                <div class="  flex items-center cursor-pointer gap-3">
+                    <img class="h-10 w-10 rounded-full" src="https://i.ibb.co.com/4jKVLMm/profile.jpg" alt="">
+                    <h3>Abdul Hasib </h3>
+                </div>
+            </div>
+
+            <!-- sidebar icon start -->
+            <div class=" absolute right-4 bottom-10 ">
+                <div class="px-3 py-2 rounded-full cursor-pointer font-normal bg-white divide-y divide-gray-100  shadow-sm hover:bg-gray-200">
+                    <i class="fa-solid fa-thumbs-up text-xl text-black "></i>
+                </div>
+                <p class="ml-2 font-semibold mb-2">65k</p>
+
+                <div class="px-3 py-2 rounded-full cursor-pointer font-normal bg-white divide-y divide-gray-100  shadow-sm hover:bg-gray-200">
+                    <!-- <i class="fa-solid fa-thumbs-up  "></i> -->
+                    <i class="fa-solid fa-message text-xl text-black"></i>
+                </div>
+                <p class="ml-2 font-semibold">65k</p>
+            </div>
+            <!-- sidebar icon end -->
+            <!-- footer ends -->
+
+
+        </div>
+
+
+        <div class="video">
+            <!-- header start -->
+            <div class="videoHeader">
+                <span class="material-symbols-outlined">
+                    arrow_back
+                </span>
+                <span class="material-symbols-outlined">
+                    photo_camera
+                </span>
+            </div>
+
+            <!-- header ends -->
+            <video src="{{ video.promotional_video.url }}" class="video_player"></video>
+
+            <!-- footer starts -->
+            <div class="videoFooter">
+                <div class="videoFooter_text">
+                    <img class="user_avatar" src="https://i.ibb.co.com/4jKVLMm/profile.jpg" alt="">
+                    <h3>Abdul Hasib * <button>Follow</button></h3>
+                </div>
+
+                <div class="videoFooter_ticker">
+                    <span class="material-symbols-outlined">
+                        music_note
+                    </span>
+                    <marquee behavior="" direction="">Song Name</marquee>
+                </div>
+
+                <div class="videoFooter_actions">
+                    <div class="videoFooter_actionsLeft">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+                        <span class="material-symbols-outlined">
+                            chat_bubble
+                        </span>
+                        <span class="material-symbols-outlined">
+                            send
+                        </span>
+                        <span class="material-symbols-outlined">
+                            more_horiz
+                        </span>
+
+
+                    </div>
+
+                    <div class="videoFooter_actionsRight">
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                favorite
+                            </span>
+                            <p>12</p>
+                        </div>
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                chat_bubble
+                            </span>
+                            <p>34</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- footer ends -->
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Related videos -->
+
+
+    <div id="related-video-container" class="flex flex-col gap-4">
+        <!-- Related videos will be dynamically loaded here -->
+    </div>
+</section>
+{% endblock main %}
+
+{% block js %}
+
+<script>
+    let relatedPage = 1;
+    let relatedLoading = false;
+
+    // Load related videos
+    const loadRelatedVideos = async () => {
+        if (relatedLoading) return;
+        relatedLoading = true;
+
+        try {
+            const response = await fetch(`/related-videos/{{ video.id }}?page=${relatedPage}`);
+            const data = await response.json();
+            console.log(data);
+            // console.log(data.videos);
+            // renderRelatedVideos(data.videos);
+            relatedPage++;
+        } catch (error) {
+            console.error("Error loading related videos:", error);
+        } finally {
+            relatedLoading = false;
+        }
+    };
+
+    // Render related videos
+    const renderRelatedVideos = (videos) => {
+        const container = document.getElementById("related-video-container");
+        videos.forEach((video) => {
+            const videoWrapper = document.createElement("div");
+            videoWrapper.className = "related-video-wrapper flex items-center gap-4 rounded-lg shadow-lg p-4 bg-white";
+
+            const videoElement = document.createElement("video");
+            videoElement.src = video.video; // Video URL
+            videoElement.muted = true;
+            videoElement.loop = true;
+            videoElement.className = "w-32 h-20 rounded-lg object-cover";
+            videoElement.addEventListener("mouseover", () => videoElement.play());
+            videoElement.addEventListener("mouseleave", () => videoElement.pause());
+
+            const playButton = document.createElement("button");
+            playButton.className = "bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600";
+            playButton.textContent = "Play";
+            playButton.addEventListener("click", () => {
+                window.location.href = `/video/${video.id}`; // Navigate to a different video
+            });
+
+            videoWrapper.appendChild(videoElement);
+            videoWrapper.appendChild(playButton);
+            container.appendChild(videoWrapper);
+        });
+    };
+
+    // Infinite scroll for related videos
+    window.addEventListener("scroll", () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            loadRelatedVideos();
+        }
+    });
+
+    // Initial load
+    document.addEventListener("DOMContentLoaded", loadRelatedVideos);
+
+    const videos = document.querySelectorAll('video')
+    for (const video of videos) {
+        video.addEventListener('click', () => {
+            if (video.paused) {
+                video.play()
+            }
+            else {
+                video.pause()
+            }
+        })
+    }
+</script>
+{% endblock js %}

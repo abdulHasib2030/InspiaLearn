@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Reels</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="app_videos">
+        <div class="video">
+            <!-- header start -->
+            <div class="videoHeader">
+                <span class="material-symbols-outlined">
+                    arrow_back
+                </span>
+                <span class="material-symbols-outlined">
+                    photo_camera
+                </span>
+            </div>
+
+            <!-- header ends -->
+            <video src="./small.mp4" class="video_player"></video>
+
+            <!-- footer starts -->
+            <div class="videoFooter">
+                <div class="videoFooter_text">
+                    <img class="user_avatar" src="https://i.ibb.co.com/4jKVLMm/profile.jpg" alt="">
+                    <h3>Abdul Hasib * <button>Follow</button></h3>
+                </div>
+
+                <div class="videoFooter_ticker">
+                    <span class="material-symbols-outlined">
+                        music_note
+                    </span>
+                    <marquee behavior="" direction="">Song Name</marquee>
+                </div>
+
+                <div class="videoFooter_actions">
+                    <div class="videoFooter_actionsLeft">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+                        <span class="material-symbols-outlined">
+                            chat_bubble
+                        </span>
+                        <span class="material-symbols-outlined">
+                            send
+                        </span>
+                        <span class="material-symbols-outlined">
+                            more_horiz
+                            </span>
+
+
+                    </div>
+
+                    <div class="videoFooter_actionsRight">
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                favorite
+                            </span>
+                            <p>12</p>
+                        </div>
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                chat_bubble
+                            </span>
+                            <p>34</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- footer ends -->
+        </div>
+        <div class="video">
+            <!-- header start -->
+            <div class="videoHeader">
+                <span class="material-symbols-outlined">
+                    arrow_back
+                </span>
+                <span class="material-symbols-outlined">
+                    photo_camera
+                </span>
+            </div>
+
+            <!-- header ends -->
+            <video src="./html.mp4" class="video_player"></video>
+
+            <!-- footer starts -->
+            <div class="videoFooter">
+                <div class="videoFooter_text">
+                    <img class="user_avatar" src="https://i.ibb.co.com/4jKVLMm/profile.jpg" alt="">
+                    <h3>Abdul Hasib * <button>Follow</button></h3>
+                </div>
+
+                <div class="videoFooter_ticker">
+                    <span class="material-symbols-outlined">
+                        music_note
+                    </span>
+                    <marquee behavior="" direction="">Song Name</marquee>
+                </div>
+
+                <div class="videoFooter_actions">
+                    <div class="videoFooter_actionsLeft">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+                        <span class="material-symbols-outlined">
+                            chat_bubble
+                        </span>
+                        <span class="material-symbols-outlined">
+                            send
+                        </span>
+                        <span class="material-symbols-outlined">
+                            more_horiz
+                            </span>
+
+
+                    </div>
+
+                    <div class="videoFooter_actionsRight">
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                favorite
+                            </span>
+                            <p>12</p>
+                        </div>
+                        <div class="videoFooter_stat">
+                            <span class="material-symbols-outlined">
+                                chat_bubble
+                            </span>
+                            <p>34</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- footer ends -->
+        </div>
+    </div>
+
+    <script>
+        const videos = document.querySelectorAll('video')
+        for(const video of videos){
+            video.addEventListener('click', ()=>{
+                if(video.paused){
+                    video.play()
+                }
+                else{
+                    video.pause()
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

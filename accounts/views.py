@@ -71,7 +71,7 @@ def oauth2callback(request):
         login(request, existing_usr)
         return redirect('http://127.0.0.1:8000'+url)
     except User.DoesNotExist:
-        user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name+last_name, 'email': email})
+        user, created = User.objects.get_or_create(username=email, defaults={'first_name': first_name+' ' +last_name, 'email': email})
         UserProfile.objects.create(user=user)
         login(request, user)
     
@@ -188,10 +188,7 @@ def homeView(request):
     
     return render(request, 'home.html', context)
 
-import environ
-env = environ.Env(
-    DEBUG=(bool, False)
-)
+
 def signUpPageView(request):
     if request.user.is_authenticated:
         return redirect('home')
