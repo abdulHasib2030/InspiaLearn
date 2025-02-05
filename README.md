@@ -1,4 +1,4 @@
-![AssetOptimizex](https://i.ibb.co.com/4wcPPSVm/screenshot-5.png)
+![Inspialearn](https://i.ibb.co.com/4wcPPSVm/screenshot-5.png)
 # ![InspiLearn Logo](https://i.ibb.co.com/xDxqnBF/favi.png) InipiaLearn - Empowering Minds, Inspiring Futures
 
 ### Purpose
@@ -68,7 +68,7 @@ First, clone the repository to your local machine:
 ```bash
 git clone https://github.com/abdulHasib2030/InspiaLearn.git
 ```
-### 2. Install the required dependencies start the Backend Server
+### 2. Install the required dependencies start the Server
 ```bash
 pip install -r requirements.txt
 python manage.py runserver
