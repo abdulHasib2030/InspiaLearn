@@ -1,4 +1,4 @@
-
+![AssetOptimizex](https://i.ibb.co.com/ZRfrv948/Screenshot-2025-02-05-161826.png)
 # ![InspiLearn Logo](https://i.ibb.co.com/xDxqnBF/favi.png) InipiaLearn - Empowering Minds, Inspiring Futures
 
 ### Purpose
