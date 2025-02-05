@@ -1,11 +1,11 @@
-![AssetOptimizex](https://i.ibb.co.com/ZRfrv948/Screenshot-2025-02-05-161826.png)
+![AssetOptimizex](https://i.ibb.co.com/4wcPPSVm/screenshot-5.png)
 # ![InspiLearn Logo](https://i.ibb.co.com/xDxqnBF/favi.png) InipiaLearn - Empowering Minds, Inspiring Futures
 
 ### Purpose
 The purpose of InspiLearn is to create an inclusive and user-friendly platform that connects learners and educators globally. It aims to empower individuals by providing accessible, flexible, and diverse learning opportunities, fostering personal and professional growth. InspiLearn is designed to inspire continuous learning, enabling users to share and acquire knowledge effortlessly, without the constraints of traditional education systems.
 
 
-# 🚀 Features in InspiaLearn
+## 🚀 Features in InspiaLearn
 
 ### 1.  Authentication and User Management
 
@@ -17,7 +17,7 @@ The purpose of InspiLearn is to create an inclusive and user-friendly platform t
 - 🎓 Instructor Account Creation: Quick and easy process to upgrade to an instructor role.
 - 📚 Course Creation and Management:
   - Upload course details, including title, subtitle, description, what will student learn, course requirements, category, course poster, promotional video, pricing and messages.
-  - Add structured, module-wise lectures for an   organized learning experience.
+  - Add structured, module-wise lectures for an organized learning experience.
   - Edit or delete courses anytime.
 ### 3. Course Management for Users
 - 🔍 Search and Filter:
@@ -38,7 +38,7 @@ The purpose of InspiLearn is to create an inclusive and user-friendly platform t
 ## 🔗 Live Link
 
 https://inspialearn.onrender.com/
-## Tech Stack
+## 🛠️ Tech Stack
 
 **Client:** HTML, TailwindCSS, JavaScript
 
@@ -46,18 +46,37 @@ https://inspialearn.onrender.com/
 
 **Database:** PostgreSQL
 
+## 📦 Dependencies Used
 
-## Screenshots
+- Django: Web framework for the backend.
+- JavaScript: Building for the frontend.
+- TailwindCSS: Utility-first CSS framework for styling.
+- PostgreSQL: Database for storing user and course data.
 
-![App Screenshot](https://i.ibb.co.com/GH2WS6D/Screenshot-2024-12-12-230945.png)
-![App Screenshot](https://i.ibb.co.com/2K3mYb6/Screenshot-2024-12-12-231433.png)
+You can install the dependencies with:
 
-![App Screenshot](https://i.ibb.co.com/RCJWjQG/Screenshot-2024-12-12-231312.png)
+Backend:
+```bash
+pip install -r requirements.txt
+```
+
+## 🚀 How to Run the Project Locally
+
+### 1. Clone the Repository
+
+First, clone the repository to your local machine:
+```bash
+git clone https://github.com/abdulHasib2030/InspiaLearn.git
+```
+### 2. Install the required dependencies start the Backend Server
+```bash
+pip install -r requirements.txt
+python manage.py runserver
+```
 
 
-![App Screenshot](https://i.ibb.co.com/tHHwPTd/Screenshot-2024-12-12-231051.png)
-![App Screenshot](https://i.ibb.co.com/9HYdP2J/Screenshot-2024-12-12-231222.png)
-![App Screenshot](https://i.ibb.co.com/pyqpLH2/Screenshot-2024-12-12-231531.png)
-![App Screenshot](https://i.ibb.co.com/48yNWZ0/Screenshot-2024-12-12-231617.png)
+
+
+
 
 
