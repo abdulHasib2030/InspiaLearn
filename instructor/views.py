@@ -602,44 +602,44 @@ def previewCourseView(request, uid, slug=None):
 
 
 
-# def course_buyers(request):
-#     publish_course = publishCourse.objects.filter(course__instructor__user= request.user)
-#     selling_course = purchaseCourseModel.objects.filter(course__in = publish_course)
+def course_buyers(request):
+    publish_course = publishCourse.objects.filter(course__instructor__user= request.user)
+    selling_course = purchaseCourseModel.objects.filter(course__in = publish_course)
     
-#     try:
-#         user_profile = UserProfile.objects.get(user = request.user.id)
-#     except UserProfile.DoesNotExist:
-#         user_profile = None
-#     course_price = []
-#     course_review = []
-#     for i in selling_course:
-#         for j in i.course.all():
-#             course_r = reviewCourse.objects.filter(user = i.user, publish_course = j)
-#             course_review.append(course_r)
-#             dic = {}
-#             dic['id'] = j.id
-#             dic['price'] = j.pricing.after_discount_price
-#             dic['title'] = j.landing_page.title
-#             course_price.append(dic)
-#     review = []
-#     for i in course_review:
-#         for j in i: 
-#             dic = {}
-#             dic['id'] = j.id
-#             dic['review_text'] = j.rating_text
-#             dic['review_star'] = j.rating_star
-#             review.append(dic)
-#     print(review)
-#     selling_course = zip(selling_course, course_price)
+    try:
+        user_profile = UserProfile.objects.get(user = request.user.id)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+    course_price = []
+    course_review = []
+    for i in selling_course:
+        for j in i.course.all():
+            course_r = reviewCourse.objects.filter(user = i.user, publish_course = j)
+            course_review.append(course_r)
+            dic = {}
+            dic['id'] = j.id
+            dic['price'] = j.pricing.after_discount_price
+            dic['title'] = j.landing_page.title
+            course_price.append(dic)
+    review = []
+    for i in course_review:
+        for j in i: 
+            dic = {}
+            dic['id'] = j.id
+            dic['review_text'] = j.rating_text
+            dic['review_star'] = j.rating_star
+            review.append(dic)
+    print(review)
+    selling_course = zip(selling_course, course_price)
     
-#     context = {
-#         'user_profile': user_profile,
-#         'selling_course': selling_course,
-#         'review': review,
-#     }
+    context = {
+        'user_profile': user_profile,
+        'selling_course': selling_course,
+        'review': review,
+    }
     
 
-#     return render(request, 'main/create_course_data/course_Buyers.html', context)
+    return render(request, 'main/create_course_data/course_Buyers.html', context)
 
 def showReviewModelInstructor(request, user_id, course_id):
     print(user_id, course_id)
@@ -655,13 +655,13 @@ def showReviewModelInstructor(request, user_id, course_id):
         })
     return JsonResponse(data, safe=False)
 
-from instructor.tables import CourseBuyersTable
-from learner.models import purchaseCourseModel
-from django_tables2 import RequestConfig
+# from instructor.tables import CourseBuyersTable
+# from learner.models import purchaseCourseModel
+# from django_tables2 import RequestConfig
 
-def course_buyers(request):
-    publish_course = publishCourse.objects.filter(course__instructor__user= request.user)
-    selling_course = purchaseCourseModel.objects.filter(course__in = publish_course)
+# def course_buyers(request):
+#     publish_course = publishCourse.objects.filter(course__instructor__user= request.user)
+#     selling_course = purchaseCourseModel.objects.filter(course__in = publish_course)
     
     # try:
     #     user_profile = UserProfile.objects.get(user = request.user.id)
@@ -693,12 +693,12 @@ def course_buyers(request):
     #     'user_profile': user_profile,
     #     'selling_course': selling_course,
     #     'review': review,
-    # }
-    purchases = purchaseCourseModel.objects.all()
-    table = CourseBuyersTable(purchases)
+    # # }
+    # purchases = purchaseCourseModel.objects.all()
+    # table = CourseBuyersTable(purchases)
 
-    # Enable pagination (10 items per page)
-    RequestConfig(request, paginate={"per_page": 1}).configure(table)
+    # # Enable pagination (10 items per page)
+    # RequestConfig(request, paginate={"per_page": 1}).configure(table)
     
 
-    return render(request, 'main/create_course_data/purchase.html', {"table": table})
+    # return render(request, 'main/create_course_data/purchase.html', {"table": table})

@@ -89,6 +89,7 @@ class Video(models.Model):
 
         super().save(*args, **kwargs)  # Save again with duration
 
+
 LEVEL =(('beginner', 'beginner'),
         ('intermediate', 'intermediate'),
         ('expert', 'expert'),
